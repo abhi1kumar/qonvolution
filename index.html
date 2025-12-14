@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="description"
+        content="Qonvolution Neural Networks improve learning of high-frequency signals.">
+  <meta name="keywords" content="QNN, Novel-View Synthesis, Zip-NeRF, 3DGS, 1D Reg, 2D Reg, Image SR, ">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Qonvolution: Towards Learning High-Frequency Signals with Queried Convolution</title>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+        rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <link rel="icon" href="./static/images/favicon.svg">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+	<style>
+  .theme-color {
+    color: #BF3875; /* Elements with class "red-bg" have a red background */
+  }
+</style>
+</head>
+<body>
+
+<nav class="navbar" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand">
+    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </a>
+  </div>
+  <div class="navbar-menu">
+    <div class="navbar-start" style="flex-grow: 1; justify-content: center;">
+      <a class="navbar-item" href="https://sites.google.com/view/abhinavkumar">
+      <span class="icon">
+          <i class="fas fa-home"></i>
+      </span>
+      </a>
+    </div>
+
+  </div>
+</nav>
+
+
+<section class="hero">
+	<div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+
+					<h1 class="title is-1 publication-title"><span class="theme-color">Qonvolution</span>: Towards Learning High-Frequency Signals with <span class="theme-color">Q</span>ueried C<span class="theme-color">onvolution</span></h1>
+
+					<div class="is-size-5 publication-authors">
+            <span class="author-block">
+              <a href="https://sites.google.com/view/abhinavkumar">Abhinav Kumar</a><sup>1</sup>,</span>
+            <span class="author-block">
+              <a href="https://www.cs.toronto.edu/~taumen/">Tristan Aumentado-Armstrong</a><sup>2*</sup>,</span>
+            <span class="author-block">
+              <a href="https://lazarvalkov.github.io/">Lazar Valkov</a><sup>1*</sup>,
+            </span>
+            <span class="author-block">
+              <a href="https://hippogriff.github.io/">Gopal Sharma</a><sup>1</sup>,
+            </span><br>
+            <span class="author-block">
+              <a href="https://scholar.google.com/citations?user=7EFMKWUAAAAJ">Alex Levinshtein</a><sup>2</sup>,
+            </span>
+            <span class="author-block">
+              <a href="https://scholar.google.com/citations?user=Q5mjo5IAAAAJ">Radek Grzeszczuk</a><sup>1,2</sup>,
+            </span>
+            <span class="author-block">
+              <a href="https://scholar.google.com/citations?user=cjIjwGEAAAAJ">Suren Kumar</a><sup>2</sup>
+            </span>
+          </div>
+
+          <div class="is-size-5 publication-authors">
+            <span class="author-block"><sup>1</sup>Samsung Research America, AI Center – Mountain View, CA, USA</span><br>
+            <span class="author-block"><sup>2</sup>Samsung Research, AI Center – Toronto, ON, Canada</span><br>
+            <span class="author-block"><sup>*</sup>Denotes equal contributions</span>
+          </div>
+
+          <div class="column has-text-centered">
+            <div class="publication-links">
+              <!-- PDF Link. -->
+              <span class="link-block">
+                <a href="https://arxiv.org/pdf/2512."
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                  </span>
+                  <span>PDF</span>
+                </a>
+              </span>
+              <span class="link-block">
+                <a href="https://arxiv.org/abs/2512."
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="ai ai-arxiv"></i>
+                  </span>
+                  <span>arXiv</span>
+                </a>
+              </span>
+              <!-- Video Link. -->
+              <span class="link-block">
+                <a href="https://www.youtube.com/watch?v=MrKrnHhk8IA"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-youtube"></i>
+                  </span>
+                  <span>Video</span>
+                </a>
+              </span>
+              <!-- Code Link. -->
+              <span class="link-block">
+                <a href="https://github.com/SamsungLabs/Qonvolution"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-github"></i>
+                  </span>
+                  <span>Code (Under Approval)</span>
+                  </a>
+              </span>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+      <video id="teaser" autoplay muted loop playsinline height="100%">
+        <source src="./static/videos/teaser.mp4"
+                type="video/mp4">
+      </video>
+      <h2 class="subtitle has-text-centered">
+        <span class="dnerf">Nerfies</span> turns selfie videos from your phone into
+        free-viewpoint
+        portraits.
+      </h2>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">BibTeX</h2>
+      </div>
+    </div>
+    <div class="columns is-centered">
+      <div class="column is-four-fifths">
+        <pre><code>@article{kumar2025qonvolution,
+    title={Qonvolution: Towards Learning of High-Frequency Signals with Queried Convolution},
+    author={Kumar, Abhinav and Aumentado-Armstrong*, Tristan and Valkov*, Lazar and Sharma, Gopal and Levinshtein, Alex and Grzeszczuk, Radek and Kumar, Suren},
+    journal={arXiv preprint arXiv:2512.},
+    year={2025}
+}</code></pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <!-- Abstract. -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+          Accurately learning high-frequency signals is a challenge in computer vision and graphics, as neural networks often struggle with these signals due to spectral bias or optimization difficulties. While current techniques like Fourier encodings have made great strides in improving performance, there remains scope for improvement when presented with high-frequency information. This paper introduces Queried-Convolutions (Qonvolutions), a simple yet powerful modification using the neighborhood properties of convolution. Qonvolution convolves a low-frequency signal with queries (such as coordinates) to enhance the learning of intricate high-frequency signals. We empirically demonstrate that Qonvolutions enhance performance across a variety of high-frequency learning tasks crucial to both the computer vision and graphics communities, including 1D regression, 2D super-resolution, 2D image regression, and novel view synthesis (NVS). In particular, by combining Gaussian splatting with Qonvolutions for NVS, we showcase state-of-the-art performance on real-world complex scenes, even outperforming powerful radiance field models on image quality.
+        </div>
+      </div>
+    </div>
+    <!--/ Abstract. -->
+
+    <!-- Paper video. -->
+    <!--
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Video</h2>
+        <div class="publication-video">
+          <iframe src="https://www.youtube.com/embed/MrKrnHhk8IA?rel=0&amp;showinfo=0"
+                  frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        </div>
+      </div>
+    </div>
+    -->
+    <!--/ Paper video. -->
+  </div>
+</section>
+
+
+<section class="section">
+	<div class="container is-max-desktop">
+		<div class="columns is-centered has-text-centered">
+			<div class="column is-four-fifths">
+
+				<!-- 1D Results -->
+				<h2 class="title is-3">1D Regression Task</h2>
+				<div class="columns is-vcentered interpolation-panel">
+					<div class="column has-text-centered">
+						<img src="./static/images/1d_regression.png"
+								 class="interpolation-image"
+								 alt="1D Regression Results."/>
+					</div>
+				</div>
+				<div class="content has-text-justified">
+					<p>
+						<b>1D Regression Results.</b>QNN outperforms MLP-based architectures including Fourier encodings in regressing high-frequency signals. This simple experiment compares networks which take the 1D queries and low-frequency (LF) signal as input to predict the high-frequency 1D signal. The standard MLP-based networks including Fourier encodings take 1D coordinates as queries. QNN changes the linear layer to a 1D convolutional layer and also takes the low-frequency signal in addition to the 1D queries.
+					</p>
+				</div>
+
+				<!-- 2D SR Results -->
+				<h2 class="title is-3">2D Image Super Resolution (SR) Task</h2>
+				<div class="columns is-vcentered interpolation-panel">
+					<div class="column has-text-centered">
+						<img src="./static/images/qualitative/sr.png"
+								 class="interpolation-image"
+								 alt="2D SR Results."/>
+					</div>
+				</div>
+				<div class="content has-text-justified">
+					<p>
+						<b>SR Results of DIV2K Val images.</b>Adding QNN to Real-ESRGAN faithfully reconstructs high-
+frequency details in various regions and results in higher quality synthesis visually. We highlight the differences
+in inset figures.
+					</p>
+				</div>
+
+				<!-- 3D NVS Results -->
+				<h2 class="title is-3">3D Novel View Synthesis Task</h2>
+				<div class="columns is-vcentered interpolation-panel">
+					<div class="column has-text-centered">
+						<img src="./static/images/qualitative/nvs.png"
+								 class="interpolation-image"
+								 alt="3D NVS Results."/>
+					</div>
+				</div>
+				<div class="content has-text-justified">
+					<p>
+						<b>NVS Results.</b>We provide examples of NVS task using 3DGS (Kerbl et al., 2023) baseline on multiple
+datasets. Adding QNN to faithfully reconstructs high-frequency details in various regions and results in higher
+quality synthesis visually. We highlight the differences in inset figures.
+					</p>
+				</div>
+
+			</div>
+		</div>
+	</div>
+</section>
+
+<section class="section">
+	<div class="container is-max-desktop">
+		<div class="columns is-centered has-text-centered">
+			<div class="column is-full-width">
+	    	<h2 class="title is-3">Related Works</h2>
+			</div>
+		</div>
+		<div class="columns is-centered">
+		  <div class="column is-four-fifths"><!-- is-four-fifths"> -->
+		    <div class="content has-text-justified">
+		      <p>
+		        ``We stand on the shoulder of giants. (William of Conches, 1123)"<br>
+		        Following are some great works for learning high-frequency signals / details:<br>
+		        <b>1. Encodings</b>: <a href="https://bmild.github.io/fourfeat/">Fourier encodings </a> and <a href="https://nvlabs.github.io/instant-ngp/">Hash-grids</a> change the input coordinates to a higher dimensional coordinates for an MLP.<br>
+		        <b>2. Activations</b>: <a href="https://www.vincentsitzmann.com/siren/">SIREN</a>, <a href="https://arxiv.org/pdf/2403.19205v1">sinc</a>, <a href="https://arxiv.org/pdf/2406.03873">QIREN</a> and <a href="https://liuzhen0212.github.io/finer/">FINER</a> change activation functions for MLPs.<br>
+		        <b>3. Frequency Domain Methods</b>: <a href="https://arxiv.org/pdf/2110.12365">Lee et al.</a> predict Fourier series coefficients, while <a href="https://arxiv.org/pdf/1909.11759">Cai et al.</a> predict phase-shifted signals for MLP.<br>
+		        <b>4. Frequency-weighted Loss</b>: <a href="https://rogeraigc.github.io/FreGS-Page/">Fre-GS</a> applies frequency-weighted losses during training.<br>
+		        <b>5. Network Ensembles</b>: <a href="https://www.sciencedirect.com/science/article/abs/pii/S0045782522003346">Galerkin neural networks</a> use multiple networks to approximate high-frequency signals.
+		      </p>
+		      <p>
+		        There are probably many more by the time you are reading this.
+		      </p>
+		    </div>
+		  </div>
+		</div>
+	</div>
+</section>
+
+
+
+
+<footer class="footer">
+  <div class="container">
+    <div class="content has-text-centered">
+      <a class="icon-link"
+         href="./static/videos/nerfies_paper.pdf">
+        <i class="fas fa-file-pdf"></i>
+      </a>
+      <a class="icon-link" href="https://github.com/abhi1kumar" class="external-link" disabled>
+        <i class="fab fa-github"></i>
+      </a>
+    </div>
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+          <p>
+            The website steals the <a
+              href="https://github.com/nerfies/nerfies.github.io">source code</a> of <a
+                href="https://nerfies.github.io">nerfies </a>, which is licensed under a <a rel="license"
+                                                href="http://creativecommons.org/licenses/by-sa/4.0/">Creative
+            Commons Attribution-ShareAlike 4.0 International License</a>. The website icon is from <a href="https://uxwing.com/cat-icon/">uxwing.com</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
