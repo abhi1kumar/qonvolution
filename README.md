@@ -1,14 +1,14 @@
-# Nerfies
+# Qonvolution
 
-This is the repository that contains source code for the [Nerfies website](https://nerfies.github.io).
+This is the repository that steals thes source code for the [Nerfies website](https://nerfies.github.io).
 
-If you find Nerfies useful for your work please cite:
+If you find this useful for your work please cite:
 ```
-@article{park2021nerfies
-  author    = {Park, Keunhong and Sinha, Utkarsh and Barron, Jonathan T. and Bouaziz, Sofien and Goldman, Dan B and Seitz, Steven M. and Martin-Brualla, Ricardo},
-  title     = {Nerfies: Deformable Neural Radiance Fields},
-  journal   = {ICCV},
-  year      = {2021},
+@article{kumar2025qonvolution,
+    title={Qonvolution: Towards Learning of High-Frequency Signals with Queried Convolution},
+    author={Kumar, Abhinav and Aumentado-Armstrong*, Tristan and Valkov*, Lazar and Sharma, Gopal and Levinshtein, Alex and Grzeszczuk, Radek and Kumar, Suren},
+    journal={arXiv preprint arXiv:2512.},
+    year={2025}
 }
 ```
 
