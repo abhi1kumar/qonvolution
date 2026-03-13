@@ -1,329 +1,491 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="description"
-        content="Qonvolution Neural Networks improve learning of high-frequency signals.">
-  <meta name="keywords" content="QNN, Novel-View Synthesis, Zip-NeRF, 3DGS, 1D Reg, 2D Reg, Image SR, ">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Qonvolution: Towards Learning High-Frequency Signals with Queried Convolution</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QNN Comparison</title>
+    <link rel="icon" href="./static/images/favicon.svg">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+    <style>
+        :root {
+            --brand-color: rgb(191, 56, 117);
+            --brand-color-light: rgba(191, 56, 117, 0.6);
+            --brand-color-hover: rgb(160, 46, 98);
+        }
 
-  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
-        rel="stylesheet">
+        html {
+            scroll-behavior: smooth;
+        }
 
-  <link rel="stylesheet" href="./static/css/bulma.min.css">
-  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
-  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
-  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
-  <link rel="stylesheet"
-        href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
-  <link rel="stylesheet" href="./static/css/index.css">
-  <link rel="icon" href="./static/images/favicon.svg">
+        .js-comparison-container {
+            position: relative;
+            aspect-ratio: 16 / 9;
+            max-width: 100%;
+            height: auto;
+            cursor: ew-resize;
+        }
+        .js-comparison-video-top {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            overflow: hidden;
+            width: 50%;
+        }
+        .comparison-video {
+            display: block;
+            object-fit: cover;
+            object-position: top left;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script defer src="./static/js/fontawesome.all.min.js"></script>
-  <script src="./static/js/bulma-carousel.min.js"></script>
-  <script src="./static/js/bulma-slider.min.js"></script>
-  <script src="./static/js/index.js"></script>
-	<style>
-  .theme-color {
-    color: #BF3875; /* Elements with class "red-bg" have a red background */
-  }
-</style>
+        .js-slider-handle {
+            position: absolute;
+            top: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--brand-color);
+            z-index: 20;
+            transform: translateX(-50%);
+            cursor: ew-resize;
+            border-radius: 9999px;
+            box-shadow: 0 0 10px rgba(191, 56, 117, 0.6);
+        }
+        .js-slider-handle::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 18px;
+            height: 18px;
+            background-color: var(--brand-color);
+            border: 2px solid white;
+            border-radius: 50%;
+            box-shadow: 0 0 8px rgba(0,0,0,0.3);
+        }
+
+        .js-controls-container {
+            position: absolute;
+            bottom: 0.6rem;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 30;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 4px 12px;
+            border-radius: 9999px;
+            backdrop-filter: blur(4px);
+        }
+        .label-badge {
+            position: absolute;
+            top: 0.75rem;
+            padding: 3px 8px;
+            color: white;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            font-family: monospace;
+            z-index: 40;
+            letter-spacing: 0.05em;
+        }
+
+        .bg-brand { background-color: var(--brand-color); }
+        .bg-brand-light { background-color: var(--brand-color-light); }
+        .text-brand { color: var(--brand-color); }
+
+        .external-link.button {
+            display: inline-flex;
+            align-items: center;
+            background-color: #363636;
+            color: white;
+            padding: 0.5rem 1.25rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            transition: all 0.2s;
+            text-decoration: none;
+            margin: 0.2rem;
+            font-size: 0.9rem;
+        }
+        .external-link.button:hover {
+            background-color: var(--brand-color);
+            transform: translateY(-1px);
+        }
+        .external-link .icon { margin-right: 0.5rem; }
+        .author-block a { color: var(--brand-color); text-decoration: none; }
+        .author-block a:hover { text-decoration: underline; }
+
+        .section-header-container {
+            text-align: center;
+            margin-bottom: 2rem;
+            margin-top: 4rem;
+        }
+        .section-header-title {
+            font-size: 2.25rem;
+            font-weight: 900;
+            color: #1f2937;
+            letter-spacing: -0.025em;
+        }
+        .section-header-underline {
+            height: 0.3rem;
+            width: 8rem;
+            background-color: var(--brand-color);
+            margin: 0.75rem auto 0;
+        }
+
+        .bibtex-container {
+            position: relative;
+            background-color: #f4f4f4;
+            border-radius: 1rem;
+            border-left: 5px solid var(--brand-color);
+        }
+        pre {
+            padding: 1.5rem;
+            overflow-x: auto;
+            margin: 0;
+        }
+        code {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.95rem;
+            color: #333;
+            line-height: 1.4;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.75rem;
+            right: 0.75rem;
+            padding: 0.4rem 0.8rem;
+            background-color: #363636;
+            color: white;
+            border-radius: 0.5rem;
+            font-size: 0.75rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            transition: all 0.2s;
+            z-index: 10;
+        }
+        .copy-btn:hover { background-color: var(--brand-color); }
+    </style>
 </head>
-<body>
+<body class="bg-gray-50 text-gray-900 p-4 sm:p-8 min-h-screen font-sans">
+    <div id="top"></div>
 
-<nav class="navbar" role="navigation" aria-label="main navigation">
-  <div class="navbar-brand">
-    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
-      <span aria-hidden="true"></span>
-      <span aria-hidden="true"></span>
-      <span aria-hidden="true"></span>
-    </a>
-  </div>
-  <div class="navbar-menu">
-    <div class="navbar-start" style="flex-grow: 1; justify-content: center;">
-      <a class="navbar-item" href="https://sites.google.com/view/abhinavkumar">
-      <span class="icon">
-          <i class="fas fa-home"></i>
-      </span>
-      </a>
-    </div>
+    <div class="max-w-[1650px] w-full mx-auto">
+        <header class="text-center mb-12">
+            <h1 class="text-3xl sm:text-5xl font-black mb-6 text-gray-900 leading-tight">
+                Towards High-Fidelity Gaussian Splatting with <br><span class="text-brand">Q</span>ueried-C<span class="text-brand">onvolution</span> Neural Networks
+            </h1>
 
-  </div>
-</nav>
-
-
-<section class="hero">
-	<div class="hero-body">
-    <div class="container is-max-desktop">
-      <div class="columns is-centered">
-        <div class="column has-text-centered">
-
-					<h1 class="title is-1 publication-title"><span class="theme-color">Qonvolution</span>: Towards Learning High-Frequency Signals with <span class="theme-color">Q</span>ueried C<span class="theme-color">onvolution</span></h1>
-
-					<div class="is-size-5 publication-authors">
-            <span class="author-block">
-              <a href="https://sites.google.com/view/abhinavkumar">Abhinav Kumar</a><sup>1</sup>,</span>
-            <span class="author-block">
-              <a href="https://www.cs.toronto.edu/~taumen/">Tristan Aumentado-Armstrong</a><sup>2*</sup>,</span>
-            <span class="author-block">
-              <a href="https://lazarvalkov.github.io/">Lazar Valkov</a><sup>1*</sup>,
-            </span>
-            <span class="author-block">
-              <a href="https://hippogriff.github.io/">Gopal Sharma</a><sup>1</sup>,
-            </span><br>
-            <span class="author-block">
-              <a href="https://scholar.google.com/citations?user=7EFMKWUAAAAJ">Alex Levinshtein</a><sup>2</sup>,
-            </span>
-            <span class="author-block">
-              <a href="https://scholar.google.com/citations?user=Q5mjo5IAAAAJ">Radek Grzeszczuk</a><sup>1,2</sup>,
-            </span>
-            <span class="author-block">
-              <a href="https://scholar.google.com/citations?user=cjIjwGEAAAAJ">Suren Kumar</a><sup>2</sup>
-            </span>
-          </div>
-
-          <div class="is-size-5 publication-authors">
-            <span class="author-block"><sup>1</sup>Samsung Research America, AI Center – Mountain View, CA, USA</span><br>
-            <span class="author-block"><sup>2</sup>Samsung Research, AI Center – Toronto, ON, Canada</span><br>
-            <span class="author-block"><sup>*</sup>Denotes equal contributions</span>
-          </div>
-
-          <div class="column has-text-centered">
-            <div class="publication-links">
-              <!-- PDF Link. -->
-              <span class="link-block">
-                <a href="https://arxiv.org/pdf/2512.12898"
-                   class="external-link button is-normal is-rounded is-dark">
-                  <span class="icon">
-                      <i class="fas fa-file-pdf"></i>
-                  </span>
-                  <span>PDF</span>
-                </a>
-              </span>
-              <span class="link-block">
-                <a href="https://arxiv.org/abs/2512.12898"
-                   class="external-link button is-normal is-rounded is-dark">
-                  <span class="icon">
-                      <i class="ai ai-arxiv"></i>
-                  </span>
-                  <span>arXiv</span>
-                </a>
-              </span>
-              <!-- Video Link. -->
-              <span class="link-block">
-                <a href="https://www.youtube.com/watch?v=MrKrnHhk8IA"
-                   class="external-link button is-normal is-rounded is-dark">
-                  <span class="icon">
-                      <i class="fab fa-youtube"></i>
-                  </span>
-                  <span>Video</span>
-                </a>
-              </span>
-              <!-- Code Link. -->
-              <span class="link-block">
-                <a href="https://github.com/SamsungLabs/Qonvolution"
-                   class="external-link button is-normal is-rounded is-dark">
-                  <span class="icon">
-                      <i class="fab fa-github"></i>
-                  </span>
-                  <span>Code (Under Approval)</span>
-                  </a>
-              </span>
+            <div class="mb-6">
+                <div class="text-lg sm:text-xl font-medium mb-2">
+                    <span class="author-block"><a href="https://sites.google.com/view/abhinavkumar">Abhinav Kumar</a><sup>1</sup>,</span>
+                    <span class="author-block"><a href="https://www.cs.toronto.edu/~taumen/">Tristan Aumentado-Armstrong</a><sup>2*</sup>,</span>
+                    <span class="author-block"><a href="https://lazarvalkov.github.io/">Lazar Valkov</a><sup>1*</sup>,</span>
+                    <span class="author-block"><a href="https://hippogriff.github.io/">Gopal Sharma</a><sup>1</sup></span><br>
+                    <span class="author-block"><a href="https://scholar.google.com/citations?user=7EFMKWUAAAAJ">Alex Levinshtein</a><sup>2</sup>,</span>
+                    <span class="author-block"><a href="https://scholar.google.com/citations?user=Q5mjo5IAAAAJ">Radek Grzeszczuk</a><sup>1,2</sup>,</span>
+                    <span class="author-block"><a href="https://scholar.google.com/citations?user=cjIjwGEAAAAJ">Suren Kumar</a><sup>2</sup></span>
+                </div>
+                <div class="text-gray-600 text-sm sm:text-base">
+                    <span class="author-block"><sup>1</sup>Samsung Research America, AI Center – Mountain View, CA, USA</span><br>
+                    <span class="author-block"><sup>2</sup>Samsung Research, AI Center – Toronto, ON, Canada</span><br>
+                    <span class="author-block"><sup>*</sup>Denotes equal contributions</span>
+                </div>
             </div>
 
-          </div>
+            <div class="flex flex-wrap justify-center gap-2 mb-10">
+                <a href="https://arxiv.org/pdf/2512.12898" class="external-link button">
+                    <span class="icon"><i class="fas fa-file-pdf"></i></span><span>PDF</span>
+                </a>
+                <a href="https://arxiv.org/abs/2512.12898" class="external-link button">
+                    <span class="icon"><i class="ai ai-arxiv"></i></span><span>arXiv</span>
+                </a>
+                <a href="https://www.youtube.com/watch?v=MrKrnHhk8IA" class="external-link button">
+                    <span class="icon"><i class="fab fa-youtube"></i></span><span>Video</span>
+                </a>
+                <a href="https://github.com/SamsungLabs/Qonvolution" class="external-link button">
+                    <span class="icon"><i class="fab fa-github"></i></span><span>Code (Under Approval)</span>
+                </a>
+            </div>
+
+            <div class="inline-flex items-center space-x-4 bg-white shadow-lg border border-gray-200 rounded-2xl p-4 mb-6">
+                <span class="text-gray-700 px-2 text-lg font-semibold">Global Sync:</span>
+                <button id="global-play-pause" class="px-6 py-2 bg-brand hover:opacity-90 text-white font-bold rounded-xl transition uppercase tracking-widest text-sm">Play All</button>
+                <button id="global-reset" class="px-6 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold rounded-xl transition uppercase tracking-widest text-sm">Reset All</button>
+            </div>
+        </header>
+
+        <div class="section-header-container mt-0">
+            <h2 class="section-header-title">MCMC vs. MCMC + QNN</h2>
+            <div class="section-header-underline"></div>
         </div>
-      </div>
-    </div>
-  </div>
-</section>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 mb-24" id="mcmc-grid"></div>
 
-<section class="hero teaser">
-  <div class="container is-max-desktop">
-    <div class="hero-body">
-      <video id="teaser" autoplay muted loop playsinline height="100%">
-        <source src="./static/videos/teaser.mp4"
-                type="video/mp4">
-      </video>
-      <h2 class="subtitle has-text-centered">
-        <!-- <span class="dnerf">Nerfies</span> turns selfie videos from your phone into
-        free-viewpoint
-        portraits. -->
-      </h2>
-    </div>
-  </div>
-</section>
+        <div class="max-w-6xl mx-auto text-center mb-24">
+            <h2 class="text-2xl font-bold mb-4 text-gray-800">Abstract</h2>
+            <div class="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 text-gray-700 leading-relaxed text-justify text-lg">
+                Gaussian Splatting has revolutionized the field of Novel View Synthesis (NVS) with faster training and real-time rendering. However, its reconstruction fidelity still trails behind the powerful radiance models such as Zip-NeRF. Motivated by our theoretical result that both queries (such as coordinates) and neighborhood are important to learn high-fidelity signals, this paper proposes Queried-Convolutions (Qonvolutions), a simple yet powerful modification using the neighborhood properties of convolution. Qonvolutions convolve a low-fidelity signal with queries to output residual and achieve high-fidelity reconstruction. We empirically demonstrate that combining Gaussian splatting with Qonvolution neural networks (QNNs) results in state-of-the-art NVS on real-world scenes, even outperforming Zip-NeRF on image fidelity. QNNs also enhance performance of 1D regression, 2D regression and 2D super-resolution tasks.
+            </div>
+        </div>
 
-<section class="section">
-  <div class="container is-max-desktop">
-    <div class="columns is-centered has-text-centered">
-      <div class="column is-four-fifths">
-        <h2 class="title is-3">BibTeX</h2>
-      </div>
-    </div>
-    <div class="columns is-centered">
-      <div class="column is-four-fifths">
-        <pre><code>@article{kumar2025qonvolution,
-    title={Qonvolution: Towards Learning of High-Frequency Signals with Queried Convolution},
+        <div class="max-w-6xl mx-auto text-center mb-24">
+            <div class="section-header-container">
+                <h2 class="section-header-title">Combine GS with QNN</h2>
+                <div class="section-header-underline"></div>
+            </div>
+            <div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 mb-12">
+                <div class="flex justify-center mb-6">
+                    <img src="static/images/gs_qnn.png" class="w-full rounded-xl" alt="Qonvolution Method Architecture"/>
+                </div>
+                <p class="text-gray-700 leading-relaxed text-lg px-2 text-justify">
+                    <b>GS+QNN Architecture.</b> Our method introduces Queried-Convolution (Qonvolution) layers that effectively combine coordinate-based queries with neighborhood information. In the context of Gaussian Splatting, Qonvolutions leverage queries and low-fidelity signals to generate high-fidelity residuals, significantly improving reconstruction quality while maintaining efficient training and rendering speeds.
+                </p>
+            </div>
+        </div>
+
+        <div class="section-header-container">
+            <h2 class="section-header-title">3DGS vs. 3DGS + QNN</h2>
+            <div class="section-header-underline"></div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 mb-24" id="3dgs-grid"></div>
+
+        <div class="max-w-6xl mx-auto">
+
+            <div class="section-header-container">
+                <h2 class="section-header-title">GS+QNN Results</h2>
+                <div class="section-header-underline"></div>
+            </div>
+            <div class="bg-white p-6 rounded-3xl shadow-lg border border-gray-100 mb-20">
+                <div class="flex justify-center mb-6">
+                    <img src="./static/images/qualitative/nvs.png" class="w-full rounded-xl" alt="3D NVS Results."/>
+                </div>
+                <p class="text-gray-700 leading-relaxed text-lg px-2 text-justify">
+                    <b>NVS Results.</b> We provide examples of NVS task using 3DGS (Kerbl et al., 2023) baseline on multiple datasets. Adding QNN to faithfully reconstructs high-frequency details in various regions and results in higher quality synthesis visually. We highlight the differences in inset figures.
+                </p>
+            </div>
+
+            <div class="section-header-container">
+                <h2 class="section-header-title">1D Regression Task</h2>
+                <div class="section-header-underline"></div>
+            </div>
+            <div class="bg-white p-6 rounded-3xl shadow-lg border border-gray-100 mb-20">
+                <img src="./static/images/1d_regression.png" class="w-full rounded-xl mb-6" alt="1D Regression Results."/>
+                <p class="text-gray-700 leading-relaxed text-lg px-2">
+                    <b>1D Regression Results.</b> QNN outperforms MLP-based architectures including Fourier encodings in regressing high-frequency signals. This simple experiment compares networks which take the 1D queries and low-frequency (LF) signal as input to predict the high-frequency 1D signal.
+                </p>
+            </div>
+
+            <div class="section-header-container">
+                <h2 class="section-header-title">2D Image Super Resolution (SR) Results</h2>
+                <div class="section-header-underline"></div>
+            </div>
+            <div class="bg-white p-6 rounded-3xl shadow-lg border border-gray-100 mb-20">
+                <img src="./static/images/qualitative/sr.png" class="w-full rounded-xl mb-6" alt="2D SR Results."/>
+                <p class="text-gray-700 leading-relaxed text-lg px-2">
+                    <b>SR Results.</b> Adding QNN to Real-ESRGAN faithfully reconstructs high-frequency details in various regions and results in higher quality synthesis visually.
+                </p>
+            </div>
+
+            <div class="section-header-container">
+                <h2 class="section-header-title">Related Works</h2>
+                <div class="section-header-underline"></div>
+            </div>
+            <div class="bg-white p-8 rounded-3xl shadow-lg border border-gray-100 mb-20 text-gray-700 leading-relaxed text-justify text-lg">
+                <p class="italic mb-6">"We stand on the shoulder of giants. (William of Conches, 1123)"</p>
+                <ul class="space-y-2 list-none text-left">
+                    <li><b>1. Encodings</b>: <a href="https://bmild.github.io/fourfeat/" target="_blank" rel="noopener noreferrer" class="text-brand font-semibold">Fourier encodings</a> and <a href="https://nvlabs.github.io/instant-ngp/" target="_blank" rel="noopener noreferrer" class="text-brand font-semibold">Hash-grids</a> change the input coordinates to a higher dimensional coordinates for an MLP.</li>
+                    <li><b>2. Activations</b>: <a href="https://www.vincentsitzmann.com/siren/" target="_blank" rel="noopener noreferrer" class="text-brand font-semibold">SIREN</a>, <a href="https://arxiv.org/pdf/2403.19205v1" target="_blank" rel="noopener noreferrer" class="text-brand font-semibold">sinc</a>, <a href="https://arxiv.org/pdf/2406.03873" target="_blank" rel="noopener noreferrer" class="text-brand font-semibold">QIREN</a> and <a href="https://liuzhen0212.github.io/finer/" target="_blank" rel="noopener noreferrer" class="text-brand font-semibold">FINER</a> change activation functions for MLPs.</li>
+                    <li><b>3. Frequency Domain Methods</b>: <a href="https://arxiv.org/pdf/2110.12365" target="_blank" rel="noopener noreferrer" class="text-brand font-semibold">Lee et al.</a> predict Fourier series coefficients, while <a href="https://arxiv.org/pdf/1909.11759" target="_blank" rel="noopener noreferrer" class="text-brand font-semibold">Cai et al.</a> predict phase-shifted signals for MLP.</li>
+                    <li><b>4. Frequency-weighted Loss</b>: <a href="https://rogeraigc.github.io/FreGS-Page/" target="_blank" rel="noopener noreferrer" class="text-brand font-semibold">Fre-GS</a> applies frequency-weighted losses during training.</li>
+                    <li><b>5. Network Ensembles</b>: <a href="https://www.sciencedirect.com/science/article/abs/pii/S0045782522003346" target="_blank" rel="noopener noreferrer" class="text-brand font-semibold">Galerkin neural networks</a> use multiple networks to approximate high-frequency signals.</li>
+                </ul>
+								<p class="mt-6 text-left">There are probably many more by the time you are reading this.</p>
+            </div>
+
+            <div class="max-w-6xl mx-auto text-left mb-8">
+                <div class="section-header-container">
+                    <h2 class="section-header-title">BibTeX</h2>
+                    <div class="section-header-underline"></div>
+                </div>
+                <div class="bibtex-container shadow-inner">
+                    <button class="copy-btn" id="copy-bibtex">Copy</button>
+                    <pre><code id="bibtex-code">@article{kumar2025qonvolution,
+    title={Towards High-Fidelity Gaussian Splatting with Queried-Convolution Neural Networks},
     author={Kumar, Abhinav and Aumentado-Armstrong*, Tristan and Valkov*, Lazar and Sharma, Gopal and Levinshtein, Alex and Grzeszczuk, Radek and Kumar, Suren},
     journal={arXiv preprint arXiv:2512.12898},
     year={2025}
 }</code></pre>
-      </div>
-    </div>
-  </div>
-</section>
+                </div>
+            </div>
 
+            <div class="text-center mb-6">
+                <a href="#top" class="text-brand font-bold hover:underline text-base uppercase tracking-widest">
+                    <i class="fas fa-chevron-up mr-2"></i>Back to Top
+                </a>
+            </div>
 
-
-<section class="section">
-  <div class="container is-max-desktop">
-    <!-- Abstract. -->
-    <div class="columns is-centered has-text-centered">
-      <div class="column is-four-fifths">
-        <h2 class="title is-3">Abstract</h2>
-        <div class="content has-text-justified">
-          Accurately learning high-frequency signals is a challenge in computer vision and graphics, as neural networks often struggle with these signals due to spectral bias or optimization difficulties. While current techniques like Fourier encodings have made great strides in improving performance, there remains scope for improvement when presented with high-frequency information. This paper introduces Queried-Convolutions (Qonvolutions), a simple yet powerful modification using the neighborhood properties of convolution. Qonvolution convolves a low-frequency signal with queries (such as coordinates) to enhance the learning of intricate high-frequency signals. We empirically demonstrate that Qonvolutions enhance performance across a variety of high-frequency learning tasks crucial to both the computer vision and graphics communities, including 1D regression, 2D super-resolution, 2D image regression, and novel view synthesis (NVS). In particular, by combining Gaussian splatting with Qonvolutions for NVS, we showcase state-of-the-art performance on real-world complex scenes, even outperforming powerful radiance field models on image quality.
+            <footer class="text-center pb-12 text-gray-500 text-sm italic border-t border-gray-200 pt-8">
+                This site has been vibe-coded.
+            </footer>
         </div>
-      </div>
     </div>
-    <!--/ Abstract. -->
 
-    <!-- Paper video. -->
-    <!--
-    <div class="columns is-centered has-text-centered">
-      <div class="column is-four-fifths">
-        <h2 class="title is-3">Video</h2>
-        <div class="publication-video">
-          <iframe src="https://www.youtube.com/embed/MrKrnHhk8IA?rel=0&amp;showinfo=0"
-                  frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-        </div>
-      </div>
-    </div>
-    -->
-    <!--/ Paper video. -->
-  </div>
-</section>
+    <script>
+        const ASSET_BASE_URL = "https://github.com/abhi1kumar/qonvolution/releases/download/v1.0.0";
+        const scenes = [
+            { id: 1, name: "Bicycle", file: "bicycle.mp4" },
+            { id: 2, name: "Garden", file: "garden.mp4" },
+            { id: 3, name: "Stump", file: "stump.mp4" },
+            { id: 4, name: "Bonsai", file: "bonsai.mp4" },
+            { id: 5, name: "Counter", file: "counter.mp4" },
+            { id: 6, name: "Kitchen", file: "kitchen.mp4" },
+            { id: 7, name: "Room", file: "room.mp4" },
+            { id: 8, name: "Treehill", file: "treehill.mp4" },
+            { id: 9, name: "Flowers", file: "flowers.mp4" },
+        ];
 
+        function createVideoCard(scene, baselinePrefix, proposedPrefix, baselineLabel, proposedLabel) {
+            const baselineUrl = `${ASSET_BASE_URL}/${baselinePrefix}${scene.file}`;
+            const proposedUrl = `${ASSET_BASE_URL}/${proposedPrefix}${scene.file}`;
 
-<section class="section">
-	<div class="container is-max-desktop">
-		<div class="columns is-centered has-text-centered">
-			<div class="column is-four-fifths">
+            return `
+                <div class="flex flex-col">
+                    <div class="js-comparison-container rounded-2xl shadow-xl overflow-hidden bg-black border-2 border-gray-100 transition-transform duration-300 hover:scale-[1.02]">
+                        <video class="js-video-baseline comparison-video" loop muted playsinline preload="auto">
+                            <source src="${baselineUrl}" type="video/mp4">
+                        </video>
+                        <div class="js-comparison-video-top">
+                            <video class="js-video-proposed comparison-video" loop muted playsinline preload="auto">
+                                <source src="${proposedUrl}" type="video/mp4">
+                            </video>
+                        </div>
+                        <div class="js-slider-handle" style="left: 50%;"></div>
+                        <div class="js-controls-container flex items-center space-x-3">
+                            <button class="js-play-pause-button px-4 py-1.5 bg-brand-light text-white font-bold rounded-full text-sm uppercase tracking-wider">Play</button>
+                            <button class="js-restart-button px-4 py-1.5 bg-gray-100/80 text-gray-800 font-bold rounded-full text-sm uppercase tracking-wider">Reset</button>
+                        </div>
+                        <div class="label-badge left-3 bg-gray-900/60">${baselineLabel}</div>
+                        <div class="label-badge right-3 bg-brand-light">${proposedLabel}</div>
+                    </div>
+                    <p class="text-center mt-4 text-xl text-gray-800 font-normal">Scene ${scene.id}. ${scene.name}</p>
+                </div>
+            `;
+        }
 
-				<!-- 1D Results -->
-				<h2 class="title is-3">1D Regression Task</h2>
-				<div class="columns is-vcentered interpolation-panel">
-					<div class="column has-text-centered">
-						<img src="./static/images/1d_regression.png"
-								 class="interpolation-image"
-								 alt="1D Regression Results."/>
-					</div>
-				</div>
-				<div class="content has-text-justified">
-					<p>
-						<b>1D Regression Results.</b>QNN outperforms MLP-based architectures including Fourier encodings in regressing high-frequency signals. This simple experiment compares networks which take the 1D queries and low-frequency (LF) signal as input to predict the high-frequency 1D signal. The standard MLP-based networks including Fourier encodings take 1D coordinates as queries. QNN changes the linear layer to a 1D convolutional layer and also takes the low-frequency signal in addition to the 1D queries.
-					</p>
-				</div>
+        const mcmcGrid = document.getElementById('mcmc-grid');
+        const dgsGrid = document.getElementById('3dgs-grid');
 
-				<!-- 2D SR Results -->
-				<h2 class="title is-3">2D Image Super Resolution (SR) Task</h2>
-				<div class="columns is-vcentered interpolation-panel">
-					<div class="column has-text-centered">
-						<img src="./static/images/qualitative/sr.png"
-								 class="interpolation-image"
-								 alt="2D SR Results."/>
-					</div>
-				</div>
-				<div class="content has-text-justified">
-					<p>
-						<b>SR Results of DIV2K Val images.</b>Adding QNN to Real-ESRGAN faithfully reconstructs high-
-frequency details in various regions and results in higher quality synthesis visually. We highlight the differences
-in inset figures.
-					</p>
-				</div>
+        scenes.forEach(scene => {
+            mcmcGrid.innerHTML += createVideoCard(scene, "mip_mcmc_", "mip_mcmc_qnn_", "MCMC", "MCMC+QNN");
+            dgsGrid.innerHTML += createVideoCard(scene, "mip_3dgs_", "mip_3dgs_qnn_", "3DGS", "3DGS+QNN");
+        });
 
-				<!-- 3D NVS Results -->
-				<h2 class="title is-3">3D Novel View Synthesis Task</h2>
-				<div class="columns is-vcentered interpolation-panel">
-					<div class="column has-text-centered">
-						<img src="./static/images/qualitative/nvs.png"
-								 class="interpolation-image"
-								 alt="3D NVS Results."/>
-					</div>
-				</div>
-				<div class="content has-text-justified">
-					<p>
-						<b>NVS Results.</b>We provide examples of NVS task using 3DGS (Kerbl et al., 2023) baseline on multiple
-datasets. Adding QNN to faithfully reconstructs high-frequency details in various regions and results in higher
-quality synthesis visually. We highlight the differences in inset figures.
-					</p>
-				</div>
+        document.addEventListener('DOMContentLoaded', () => {
+            const containers = document.querySelectorAll('.js-comparison-container');
+            const allVideos = document.querySelectorAll('video');
+            const globalPlayBtn = document.getElementById('global-play-pause');
+            const globalResetBtn = document.getElementById('global-reset');
+            const copyBtn = document.getElementById('copy-bibtex');
+            const bibtexCode = document.getElementById('bibtex-code');
 
-			</div>
-		</div>
-	</div>
-</section>
+            copyBtn.addEventListener('click', () => {
+                navigator.clipboard.writeText(bibtexCode.innerText).then(() => {
+                    copyBtn.innerText = 'Copied!';
+                    setTimeout(() => { copyBtn.innerText = 'Copy'; }, 2000);
+                });
+            });
 
-<section class="section">
-	<div class="container is-max-desktop">
-		<div class="columns is-centered has-text-centered">
-			<div class="column is-full-width">
-	    	<h2 class="title is-3">Related Works</h2>
-			</div>
-		</div>
-		<div class="columns is-centered">
-		  <div class="column is-four-fifths"><!-- is-four-fifths"> -->
-		    <div class="content has-text-justified">
-		      <p>
-		        ``We stand on the shoulder of giants. (William of Conches, 1123)"<br>
-		        Following are some great works for learning high-frequency signals / details:<br>
-		        <b>1. Encodings</b>: <a href="https://bmild.github.io/fourfeat/">Fourier encodings </a> and <a href="https://nvlabs.github.io/instant-ngp/">Hash-grids</a> change the input coordinates to a higher dimensional coordinates for an MLP.<br>
-		        <b>2. Activations</b>: <a href="https://www.vincentsitzmann.com/siren/">SIREN</a>, <a href="https://arxiv.org/pdf/2403.19205v1">sinc</a>, <a href="https://arxiv.org/pdf/2406.03873">QIREN</a> and <a href="https://liuzhen0212.github.io/finer/">FINER</a> change activation functions for MLPs.<br>
-		        <b>3. Frequency Domain Methods</b>: <a href="https://arxiv.org/pdf/2110.12365">Lee et al.</a> predict Fourier series coefficients, while <a href="https://arxiv.org/pdf/1909.11759">Cai et al.</a> predict phase-shifted signals for MLP.<br>
-		        <b>4. Frequency-weighted Loss</b>: <a href="https://rogeraigc.github.io/FreGS-Page/">Fre-GS</a> applies frequency-weighted losses during training.<br>
-		        <b>5. Network Ensembles</b>: <a href="https://www.sciencedirect.com/science/article/abs/pii/S0045782522003346">Galerkin neural networks</a> use multiple networks to approximate high-frequency signals.
-		      </p>
-		      <p>
-		        There are probably many more by the time you are reading this.
-		      </p>
-		    </div>
-		  </div>
-		</div>
-	</div>
-</section>
+            let isAllPlaying = false;
+            globalPlayBtn.addEventListener('click', () => {
+                if (isAllPlaying) {
+                    allVideos.forEach(v => v.pause());
+                    globalPlayBtn.textContent = 'Play All';
+                } else {
+                    allVideos.forEach(v => v.play());
+                    globalPlayBtn.textContent = 'Pause All';
+                }
+                isAllPlaying = !isAllPlaying;
+            });
 
+            globalResetBtn.addEventListener('click', () => {
+                allVideos.forEach(v => { v.currentTime = 0; v.pause(); });
+                isAllPlaying = false;
+                globalPlayBtn.textContent = 'Play All';
+            });
 
+            containers.forEach(container => {
+                const proposedClip = container.querySelector('.js-comparison-video-top');
+                const baselineVideo = container.querySelector('.js-video-baseline');
+                const proposedVideo = container.querySelector('.js-video-proposed');
+                const handle = container.querySelector('.js-slider-handle');
+                const playBtn = container.querySelector('.js-play-pause-button');
 
+                let isDragging = false;
+                const videos = [baselineVideo, proposedVideo];
 
-<footer class="footer">
-  <div class="container">
-    <div class="content has-text-centered">
-      <a class="icon-link"
-         href="./static/videos/nerfies_paper.pdf">
-        <i class="fas fa-file-pdf"></i>
-      </a>
-      <a class="icon-link" href="https://github.com/abhi1kumar" class="external-link" disabled>
-        <i class="fab fa-github"></i>
-      </a>
-    </div>
-    <div class="columns is-centered">
-      <div class="column is-8">
-        <div class="content">
-          <p>
-            The website steals the <a
-              href="https://github.com/nerfies/nerfies.github.io">source code</a> of <a
-                href="https://nerfies.github.io">nerfies </a>, which is licensed under a <a rel="license"
-                                                href="http://creativecommons.org/licenses/by-sa/4.0/">Creative
-            Commons Attribution-ShareAlike 4.0 International License</a>. The website icon is from <a href="https://uxwing.com/cat-icon/">uxwing.com</a>.
-          </p>
-        </div>
-      </div>
-    </div>
-  </div>
-</footer>
+                const setGeometry = () => {
+                    const rect = baselineVideo.getBoundingClientRect();
+                    if (rect.width > 0) {
+                        proposedVideo.style.width = `${rect.width}px`;
+                        proposedVideo.style.height = `${rect.height}px`;
+                    }
+                };
 
+                const syncTime = () => {
+                    if (Math.abs(proposedVideo.currentTime - baselineVideo.currentTime) > 0.05) {
+                        proposedVideo.currentTime = baselineVideo.currentTime;
+                    }
+                };
+
+                baselineVideo.addEventListener('timeupdate', syncTime);
+
+                const updateSlider = (clientX) => {
+                    const rect = container.getBoundingClientRect();
+                    let x = clientX - rect.left;
+                    x = Math.max(0, Math.min(x, rect.width));
+                    const pct = (x / rect.width) * 100;
+                    proposedClip.style.width = `${pct}%`;
+                    handle.style.left = `${pct}%`;
+                };
+
+                playBtn.addEventListener('click', () => {
+                    if (!baselineVideo.paused) {
+                        videos.forEach(v => v.pause());
+                    } else {
+                        proposedVideo.currentTime = baselineVideo.currentTime;
+                        videos.forEach(v => v.play());
+                    }
+                });
+
+                videos.forEach(v => {
+                    v.addEventListener('loadedmetadata', setGeometry);
+                    v.addEventListener('play', () => playBtn.textContent = 'Pause');
+                    v.addEventListener('pause', () => playBtn.textContent = 'Play');
+                });
+
+                const onMove = (e) => {
+                    if (!isDragging) return;
+                    const x = e.touches ? e.touches[0].clientX : e.clientX;
+                    updateSlider(x);
+                };
+
+                handle.addEventListener('mousedown', () => isDragging = true);
+                handle.addEventListener('touchstart', (e) => { isDragging = true; e.preventDefault(); }, {passive: false});
+                document.addEventListener('mousemove', onMove);
+                document.addEventListener('touchmove', onMove, {passive: false});
+                document.addEventListener('mouseup', () => isDragging = false);
+                document.addEventListener('touchend', () => isDragging = false);
+
+                setTimeout(() => {
+                    setGeometry();
+                    updateSlider(container.getBoundingClientRect().left + (container.offsetWidth / 2));
+                }, 500);
+                window.addEventListener('resize', setGeometry);
+            });
+        });
+    </script>
 </body>
 </html>

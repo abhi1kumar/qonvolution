@@ -1,11 +1,9 @@
 # Qonvolution
 
-This is the repository that steals thes source code for the [Nerfies website](https://nerfies.github.io).
-
 If you find this useful for your work please cite:
 ```
 @article{kumar2025qonvolution,
-    title={Qonvolution: Towards Learning of High-Frequency Signals with Queried Convolution},
+    title={Towards High-Fidelity Gaussian Splatting with Queried-Convolution Neural Networks},
     author={Kumar, Abhinav and Aumentado-Armstrong*, Tristan and Valkov*, Lazar and Sharma, Gopal and Levinshtein, Alex and Grzeszczuk, Radek and Kumar, Suren},
     journal={arXiv preprint arXiv:2512.},
     year={2025}
