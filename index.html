@@ -131,7 +131,7 @@
         }
         .section-header-underline {
             height: 0.3rem;
-            width: 8rem;
+            width: 12rem;
             background-color: var(--brand-color);
             margin: 0.75rem auto 0;
         }
@@ -181,13 +181,13 @@
 
             <div class="mb-6">
                 <div class="text-lg sm:text-xl font-medium mb-2">
-                    <span class="author-block"><a href="https://sites.google.com/view/abhinavkumar">Abhinav Kumar</a><sup>1</sup>,</span>
-                    <span class="author-block"><a href="https://www.cs.toronto.edu/~taumen/">Tristan Aumentado-Armstrong</a><sup>2*</sup>,</span>
-                    <span class="author-block"><a href="https://lazarvalkov.github.io/">Lazar Valkov</a><sup>1*</sup>,</span>
-                    <span class="author-block"><a href="https://hippogriff.github.io/">Gopal Sharma</a><sup>1</sup></span><br>
-                    <span class="author-block"><a href="https://scholar.google.com/citations?user=7EFMKWUAAAAJ">Alex Levinshtein</a><sup>2</sup>,</span>
-                    <span class="author-block"><a href="https://scholar.google.com/citations?user=Q5mjo5IAAAAJ">Radek Grzeszczuk</a><sup>1,2</sup>,</span>
-                    <span class="author-block"><a href="https://scholar.google.com/citations?user=cjIjwGEAAAAJ">Suren Kumar</a><sup>2</sup></span>
+                    <span class="author-block"><a href="https://sites.google.com/view/abhinavkumar" target="_blank" rel="noopener noreferrer">Abhinav Kumar</a><sup>1</sup>,</span>
+                    <span class="author-block"><a href="https://www.cs.toronto.edu/~taumen/" target="_blank" rel="noopener noreferrer">Tristan Aumentado-Armstrong</a><sup>2*</sup>,</span>
+                    <span class="author-block"><a href="https://lazarvalkov.github.io/" target="_blank" rel="noopener noreferrer">Lazar Valkov</a><sup>1*</sup>,</span>
+                    <span class="author-block"><a href="https://hippogriff.github.io/" target="_blank" rel="noopener noreferrer">Gopal Sharma</a><sup>1</sup></span><br>
+                    <span class="author-block"><a href="https://scholar.google.com/citations?user=7EFMKWUAAAAJ" target="_blank" rel="noopener noreferrer">Alex Levinshtein</a><sup>2</sup>,</span>
+                    <span class="author-block"><a href="https://scholar.google.com/citations?user=Q5mjo5IAAAAJ" target="_blank" rel="noopener noreferrer">Radek Grzeszczuk</a><sup>1,2</sup>,</span>
+                    <span class="author-block"><a href="https://scholar.google.com/citations?user=cjIjwGEAAAAJ" target="_blank" rel="noopener noreferrer">Suren Kumar</a><sup>2</sup></span>
                 </div>
                 <div class="text-gray-600 text-sm sm:text-base">
                     <span class="author-block"><sup>1</sup>Samsung Research America, AI Center – Mountain View, CA, USA</span><br>
@@ -197,16 +197,16 @@
             </div>
 
             <div class="flex flex-wrap justify-center gap-2 mb-10">
-                <a href="https://arxiv.org/pdf/2512.12898" class="external-link button">
+                <a href="https://arxiv.org/pdf/2512.12898" target="_blank" rel="noopener noreferrer" class="external-link button">
                     <span class="icon"><i class="fas fa-file-pdf"></i></span><span>PDF</span>
                 </a>
-                <a href="https://arxiv.org/abs/2512.12898" class="external-link button">
+                <a href="https://arxiv.org/abs/2512.12898" target="_blank" rel="noopener noreferrer" class="external-link button">
                     <span class="icon"><i class="ai ai-arxiv"></i></span><span>arXiv</span>
                 </a>
-                <a href="https://www.youtube.com/watch?v=MrKrnHhk8IA" class="external-link button">
+                <a href="https://www.youtube.com/watch?v=MrKrnHhk8IA" target="_blank" rel="noopener noreferrer" class="external-link button">
                     <span class="icon"><i class="fab fa-youtube"></i></span><span>Video</span>
                 </a>
-                <a href="https://github.com/SamsungLabs/Qonvolution" class="external-link button">
+                <a href="https://github.com/SamsungLabs/Qonvolution" target="_blank" rel="noopener noreferrer" class="external-link button">
                     <span class="icon"><i class="fab fa-github"></i></span><span>Code (Under Approval)</span>
                 </a>
             </div>
@@ -224,8 +224,11 @@
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 mb-24" id="mcmc-grid"></div>
 
+        <div class="section-header-container mt-0">
+            <h2 class="section-header-title">Abstract</h2>
+            <div class="section-header-underline"></div>
+        </div>
         <div class="max-w-6xl mx-auto text-center mb-24">
-            <h2 class="text-2xl font-bold mb-4 text-gray-800">Abstract</h2>
             <div class="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 text-gray-700 leading-relaxed text-justify text-lg">
                 Gaussian Splatting has revolutionized the field of Novel View Synthesis (NVS) with faster training and real-time rendering. However, its reconstruction fidelity still trails behind the powerful radiance models such as Zip-NeRF. Motivated by our theoretical result that both queries (such as coordinates) and neighborhood are important to learn high-fidelity signals, this paper proposes Queried-Convolutions (Qonvolutions), a simple yet powerful modification using the neighborhood properties of convolution. Qonvolutions convolve a low-fidelity signal with queries to output residual and achieve high-fidelity reconstruction. We empirically demonstrate that combining Gaussian splatting with Qonvolution neural networks (QNNs) results in state-of-the-art NVS on real-world scenes, even outperforming Zip-NeRF on image fidelity. QNNs also enhance performance of 1D regression, 2D regression and 2D super-resolution tasks.
             </div>
@@ -255,7 +258,7 @@
         <div class="max-w-6xl mx-auto">
 
             <div class="section-header-container">
-                <h2 class="section-header-title">GS+QNN Results</h2>
+                <h2 class="section-header-title">3DGS vs. 3DGS+QNN Image Results</h2>
                 <div class="section-header-underline"></div>
             </div>
             <div class="bg-white p-6 rounded-3xl shadow-lg border border-gray-100 mb-20">
@@ -263,18 +266,18 @@
                     <img src="./static/images/qualitative/nvs.png" class="w-full rounded-xl" alt="3D NVS Results."/>
                 </div>
                 <p class="text-gray-700 leading-relaxed text-lg px-2 text-justify">
-                    <b>NVS Results.</b> We provide examples of NVS task using 3DGS (Kerbl et al., 2023) baseline on multiple datasets. Adding QNN to faithfully reconstructs high-frequency details in various regions and results in higher quality synthesis visually. We highlight the differences in inset figures.
+                    <b>NVS Results.</b> We provide examples of NVS task using 3DGS (Kerbl et al., 2023) baseline on multiple datasets. Adding QNN to faithfully reconstructs details in various regions and results in higher quality synthesis visually. We highlight the differences in inset figures.
                 </p>
             </div>
 
             <div class="section-header-container">
-                <h2 class="section-header-title">1D Regression Task</h2>
+                <h2 class="section-header-title">1D Regression Results</h2>
                 <div class="section-header-underline"></div>
             </div>
             <div class="bg-white p-6 rounded-3xl shadow-lg border border-gray-100 mb-20">
                 <img src="./static/images/1d_regression.png" class="w-full rounded-xl mb-6" alt="1D Regression Results."/>
                 <p class="text-gray-700 leading-relaxed text-lg px-2">
-                    <b>1D Regression Results.</b> QNN outperforms MLP-based architectures including Fourier encodings in regressing high-frequency signals. This simple experiment compares networks which take the 1D queries and low-frequency (LF) signal as input to predict the high-frequency 1D signal.
+                    <b>1D Regression Results.</b> QNN outperforms MLP-based architectures including Fourier encodings in regressing high-fidelity signals. This simple experiment compares networks which take the 1D queries and low-fidelity (LF) signal as input to predict the high-fidelity 1D signal.
                 </p>
             </div>
 
@@ -285,7 +288,7 @@
             <div class="bg-white p-6 rounded-3xl shadow-lg border border-gray-100 mb-20">
                 <img src="./static/images/qualitative/sr.png" class="w-full rounded-xl mb-6" alt="2D SR Results."/>
                 <p class="text-gray-700 leading-relaxed text-lg px-2">
-                    <b>SR Results.</b> Adding QNN to Real-ESRGAN faithfully reconstructs high-frequency details in various regions and results in higher quality synthesis visually.
+                    <b>SR Results.</b> Adding QNN to Real-ESRGAN faithfully reconstructs details in various regions and results in higher quality synthesis visually.
                 </p>
             </div>
 
@@ -296,13 +299,13 @@
             <div class="bg-white p-8 rounded-3xl shadow-lg border border-gray-100 mb-20 text-gray-700 leading-relaxed text-justify text-lg">
                 <p class="italic mb-6">"We stand on the shoulder of giants. (William of Conches, 1123)"</p>
                 <ul class="space-y-2 list-none text-left">
-                    <li><b>1. Encodings</b>: <a href="https://bmild.github.io/fourfeat/" target="_blank" rel="noopener noreferrer" class="text-brand font-semibold">Fourier encodings</a> and <a href="https://nvlabs.github.io/instant-ngp/" target="_blank" rel="noopener noreferrer" class="text-brand font-semibold">Hash-grids</a> change the input coordinates to a higher dimensional coordinates for an MLP.</li>
-                    <li><b>2. Activations</b>: <a href="https://www.vincentsitzmann.com/siren/" target="_blank" rel="noopener noreferrer" class="text-brand font-semibold">SIREN</a>, <a href="https://arxiv.org/pdf/2403.19205v1" target="_blank" rel="noopener noreferrer" class="text-brand font-semibold">sinc</a>, <a href="https://arxiv.org/pdf/2406.03873" target="_blank" rel="noopener noreferrer" class="text-brand font-semibold">QIREN</a> and <a href="https://liuzhen0212.github.io/finer/" target="_blank" rel="noopener noreferrer" class="text-brand font-semibold">FINER</a> change activation functions for MLPs.</li>
-                    <li><b>3. Frequency Domain Methods</b>: <a href="https://arxiv.org/pdf/2110.12365" target="_blank" rel="noopener noreferrer" class="text-brand font-semibold">Lee et al.</a> predict Fourier series coefficients, while <a href="https://arxiv.org/pdf/1909.11759" target="_blank" rel="noopener noreferrer" class="text-brand font-semibold">Cai et al.</a> predict phase-shifted signals for MLP.</li>
-                    <li><b>4. Frequency-weighted Loss</b>: <a href="https://rogeraigc.github.io/FreGS-Page/" target="_blank" rel="noopener noreferrer" class="text-brand font-semibold">Fre-GS</a> applies frequency-weighted losses during training.</li>
-                    <li><b>5. Network Ensembles</b>: <a href="https://www.sciencedirect.com/science/article/abs/pii/S0045782522003346" target="_blank" rel="noopener noreferrer" class="text-brand font-semibold">Galerkin neural networks</a> use multiple networks to approximate high-frequency signals.</li>
+                    <li><b>1. Encodings</b>: <a href="https://bmild.github.io/fourfeat/" target="_blank" rel="noopener noreferrer" class="text-brand font-semibold hover:underline">Fourier encodings</a> and <a href="https://nvlabs.github.io/instant-ngp/" target="_blank" rel="noopener noreferrer" class="text-brand font-semibold hover:underline">Hash-grids</a> change the input coordinates to a higher dimensional coordinates for an MLP.</li>
+                    <li><b>2. Activations</b>: <a href="https://www.vincentsitzmann.com/siren/" target="_blank" rel="noopener noreferrer" class="text-brand font-semibold hover:underline">SIREN</a>, <a href="https://arxiv.org/pdf/2403.19205v1" target="_blank" rel="noopener noreferrer" class="text-brand font-semibold hover:underline">sinc</a>, <a href="https://arxiv.org/pdf/2406.03873" target="_blank" rel="noopener noreferrer" class="text-brand font-semibold hover:underline">QIREN</a> and <a href="https://liuzhen0212.github.io/finer/" target="_blank" rel="noopener noreferrer" class="text-brand font-semibold hover:underline">FINER</a> change activation functions for MLPs.</li>
+                    <li><b>3. Frequency Domain Methods</b>: <a href="https://arxiv.org/pdf/2110.12365" target="_blank" rel="noopener noreferrer" class="text-brand font-semibold hover:underline">Lee et al.</a> predict Fourier series coefficients, while <a href="https://arxiv.org/pdf/1909.11759" target="_blank" rel="noopener noreferrer" class="text-brand font-semibold hover:underline">Cai et al.</a> predict phase-shifted signals for MLP.</li>
+                    <li><b>4. Frequency-weighted Loss</b>: <a href="https://rogeraigc.github.io/FreGS-Page/" target="_blank" rel="noopener noreferrer" class="text-brand font-semibold hover:underline">Fre-GS</a> applies frequency-weighted losses during training.</li>
+                    <li><b>5. Network Ensembles</b>: <a href="https://www.sciencedirect.com/science/article/abs/pii/S0045782522003346" target="_blank" rel="noopener noreferrer" class="text-brand font-semibold hover:underline">Galerkin neural networks</a> use multiple networks to approximate high-fidelity signals.</li>
                 </ul>
-								<p class="mt-6 text-left">There are probably many more by the time you are reading this.</p>
+                <p class="mt-6 text-left">There are probably many more by the time you are reading this.</p>
             </div>
 
             <div class="max-w-6xl mx-auto text-left mb-8">
@@ -327,8 +330,8 @@
                 </a>
             </div>
 
-            <footer class="text-center pb-12 text-gray-500 text-sm italic border-t border-gray-200 pt-8">
-                This site has been vibe-coded.
+            <footer class="text-center pb-12 text-gray-500 text-sm border-t border-gray-200 pt-8">
+                <span class="ml-2">This site has been <a href="https://en.wikipedia.org/wiki/Vibe_coding" target="_blank" rel="noopener noreferrer" class="hover:underline hover:text-brand transition-colors mr-2">vibe-coded</a></span> | <a href="https://github.com/abhi1kumar/qonvolution" target="_blank" rel="noopener noreferrer" class="hover:underline hover:text-brand transition-colors mr-2">Website source code</a>
             </footer>
         </div>
     </div>
