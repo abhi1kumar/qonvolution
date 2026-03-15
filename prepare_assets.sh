@@ -24,8 +24,8 @@ for item in "${FOLDERS[@]}"; do
                 new_filename="${prefix}${filename}"
 
                 # Copy to output directory with the new name
-                # cp "$file" "$OUTPUT_DIR/$new_filename"
-                echo "$new_filename"
+                cp "$file" "$OUTPUT_DIR/$new_filename"
+                echo "--> Creating $new_filename"
             fi
         done
     else
