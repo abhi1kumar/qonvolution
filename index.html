@@ -425,6 +425,7 @@
                 const proposedVideo = container.querySelector('.js-video-proposed');
                 const handle = container.querySelector('.js-slider-handle');
                 const playBtn = container.querySelector('.js-play-pause-button');
+                const restartBtn = container.querySelector('.js-restart-button');
 
                 let isDragging = false;
                 const videos = [baselineVideo, proposedVideo];
@@ -461,6 +462,13 @@
                         proposedVideo.currentTime = baselineVideo.currentTime;
                         videos.forEach(v => v.play());
                     }
+                });
+
+                restartBtn.addEventListener('click', () => {
+                    videos.forEach(v => {
+                        v.currentTime = 0;
+                        v.pause();
+                    });
                 });
 
                 videos.forEach(v => {
