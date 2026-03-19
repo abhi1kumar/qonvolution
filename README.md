@@ -1,8 +1,27 @@
 # Towards High-Fidelity Gaussian Splatting with Queried-Convolution Neural Networks Website
 
-Feel free to use this website template.
+<div align="center">
 
-If you find this useful for your work please cite:
+[![arXiv](http://img.shields.io/badge/arXiv-2512.12898-B31B1B.svg)](https://arxiv.org/pdf/2512.12898)
+[![project](https://img.shields.io/badge/project-qonvolution-brightgreen)](https://abhi1kumar.github.io/qonvolution/)
+
+</div>
+
+<div align="center">
+    <p style="font-size:1.2em">
+        <a href="https://sites.google.com/view/abhinavkumar"><strong>Abhinav Kumar</strong></a><sup>1</sup> ·
+        <a href="https://www.cs.toronto.edu/~taumen/"><strong>Tristan Aumentado-Armstrong</strong></a><sup>2*</sup> ·
+        <a href="https://lazarvalkov.github.io/"><strong>Lazar Valkov</strong></a><sup>1*</sup> ·
+        <a href="https://hippogriff.github.io/"><strong>Gopal Sharma</strong></a><sup>1</sup> <br>
+        <a href="https://scholar.google.com/citations?user=7EFMKWUAAAAJ"><strong>Alex Levinshtein</strong></a><sup>2</sup> ·
+        <a href="https://scholar.google.com/citations?user=Q5mjo5IAAAAJ"><strong>Radek Grzeszczuk</strong></a><sup>1,2</sup> ·
+        <a href="https://scholar.google.com/citations?user=cjIjwGEAAAAJ"><strong>Suren Kumar</strong></a><sup>1</sup><br>
+        <sup>1</sup>Samsung Research America, AI Center – Mountain View, CA, USA <br><sup>2</sup>Samsung Research, AI Center – Toronto, ON, Canada<br>
+        <sup>*</sup>Equal Second Contributions
+    </p>
+</div>
+
+Feel free to use this website template. If you find this useful for your work please cite:
 ```
 @article{kumar2025qonvolution,
     title={Towards High-Fidelity Gaussian Splatting with Queried-Convolution Neural Networks},
