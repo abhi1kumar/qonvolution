@@ -222,8 +222,8 @@
         }
         .component-coordinates { color: rgb(240, 97, 92); }
         .component-neighborhood { color: #c8dcff; }
-        .ablation-comparison { overflow-x: auto; }
-        .ablation-comparison-content { min-width: 800px; }
+        .ablation-comparison, .image-comparison { overflow-x: auto; }
+        .ablation-comparison-content, .image-comparison-content { min-width: 800px; }
         .media-panel { margin-bottom: 3.5rem; }
         .media-panel img {
             width: 100%;
@@ -579,13 +579,17 @@
 
         <div class="content-section">
             <figure class="media-panel wide-media-section">
-                <div class="grid grid-cols-4 gap-2 mb-0.5 text-center font-medium">
-                    <h4>Spherical Voronoi</h4>
-                    <h4>NHT</h4>
-                    <h4>NHT + CCCN</h4>
-                    <h4>Ground Truth</h4>
+                <div class="image-comparison" role="region" aria-label="Teaser comparisons" tabindex="0">
+                    <div class="image-comparison-content">
+                        <div class="grid grid-cols-4 gap-2 mb-0.5 text-center font-medium">
+                            <h4>Spherical Voronoi</h4>
+                            <h4>NHT</h4>
+                            <h4>NHT + CCCN</h4>
+                            <h4>Ground Truth</h4>
+                        </div>
+                        <img src="./static/images/qualitative/teaser.png" alt="Windmill scene comparison between Spherical Voronoi, NHT, NHT with CCNN, and ground truth, with enlarged detail insets."/>
+                    </div>
                 </div>
-                <img src="./static/images/qualitative/teaser.png" alt="Windmill scene comparison between Spherical Voronoi, NHT, NHT with CCNN, and ground truth, with enlarged detail insets."/>
                 <figcaption class="content-panel">
                     <b>Teaser Figure.</b> Adding CCNN to the NHT baseline improves visual fidelity compared with previous works. Inset figures highlight differences.
                 </figcaption>
@@ -866,13 +870,17 @@
                     <h3 class="subsection-title" id="qualitative-results">Qualitative Results</h3>
                 </div>
                 <figure class="media-panel">
-                    <div class="grid grid-cols-4 gap-2 mb-0.5 text-center font-medium">
-                        <h4>Spherical Voronoi</h4>
-                        <h4>NHT</h4>
-                        <h4>NHT + CCCN</h4>
-                        <h4>Ground Truth</h4>
+                    <div class="image-comparison" role="region" aria-label="NVS qualitative comparisons" tabindex="0">
+                        <div class="image-comparison-content">
+                            <div class="grid grid-cols-4 gap-2 mb-0.5 text-center font-medium">
+                                <h4>Spherical Voronoi</h4>
+                                <h4>NHT</h4>
+                                <h4>NHT + CCCN</h4>
+                                <h4>Ground Truth</h4>
+                            </div>
+                            <img src="./static/images/qualitative/nvs.png" alt="Novel view synthesis comparisons across five scenes, with zoomed-in details showing differences in reconstruction fidelity."/>
+                        </div>
                     </div>
-                    <img src="./static/images/qualitative/nvs.png" alt="Novel view synthesis comparisons across five scenes, with zoomed-in details showing differences in reconstruction fidelity."/>
                     <figcaption class="content-panel">
                         <b>NVS Qualitative Results</b> between previous works and adding CCNN with NHT baseline on five datasets. Adding CCNN results in higher fidelity synthesis visually. Inset figures highlight differences.
                     </figcaption>
