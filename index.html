@@ -191,7 +191,7 @@
             color: #fff;
         }
         .control-button-primary:hover { background: var(--brand-color-hover); }
-        a:focus-visible, button:focus-visible {
+        a:focus-visible, button:focus-visible, .js-comparison-container:focus-visible {
             outline: 2px solid var(--brand-color);
             outline-offset: 4px;
         }
@@ -607,6 +607,7 @@
                     <button id="global-play-pause" class="control-button control-button-primary">Play All</button>
                     <button id="global-reset" class="control-button">Reset All</button>
                 </div>
+                <p>Drag <span class="text-brand">vertical line</span> to compare, Press space to pause / play in fullscreen</p>
             </div>
             <div class="content-section">
                 <div class="comparison-grid wide-media-section grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="mcmc-grid"></div>
@@ -992,7 +993,7 @@
 
             return `
                 <div class="flex flex-col">
-                    <div class="js-comparison-container">
+                    <div class="js-comparison-container" tabindex="0" role="group" aria-label="${scene.name} video comparison" aria-keyshortcuts="Space">
                         <video class="js-video-baseline comparison-video" loop muted playsinline preload="auto">
                             <source src="${baselineUrl}" type="video/mp4">
                         </video>
@@ -1106,6 +1107,21 @@
                 const fullscreenIcon = fullscreenBtn.querySelector('i');
                 const fullscreenLabel = fullscreenBtn.getAttribute('aria-label');
 
+                container.addEventListener('pointerdown', (event) => {
+                    if (!event.target.closest('button, a, input, textarea, select, summary') && !event.target.isContentEditable) {
+                        container.focus({ preventScroll: true });
+                    }
+                });
+                container.addEventListener('keydown', (event) => {
+                    if ((event.code !== 'Space' && event.key !== ' ') || event.defaultPrevented || event.isComposing ||
+                        event.altKey || event.ctrlKey || event.metaKey || event.shiftKey ||
+                        event.target.closest('button, a, input, textarea, select, summary') || event.target.isContentEditable) {
+                        return;
+                    }
+                    event.preventDefault();
+                    if (!event.repeat) playBtn.click();
+                });
+
                 let isDragging = false;
                 const videos = [baselineVideo, proposedVideo];
 
@@ -1140,6 +1156,7 @@
                             await exitFullscreen.call(document);
                         } else {
                             await requestFullscreen.call(container);
+                            container.focus({ preventScroll: true });
                         }
                     } catch (error) {
                         console.error('Could not change full-screen mode:', error);
