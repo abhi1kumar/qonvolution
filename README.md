@@ -1,4 +1,4 @@
-# Towards High-Fidelity Gaussian Splatting with Queried-Convolution Neural Networks Website
+# Beyond Primitive Bloat: High-Fidelity Gaussian Splatting with Coordinate-Convolution Neural Network Website
 
 <div align="center">
 
@@ -24,7 +24,7 @@
 Feel free to use this website template. If you find this useful for your work please cite:
 ```
 @article{kumar2025qonvolution,
-    title={Towards High-Fidelity Gaussian Splatting with Queried-Convolution Neural Networks},
+    title={Beyond Primitive Bloat: High-Fidelity Gaussian Splatting with Coordinate-Convolution Neural Network},
     author={Kumar, Abhinav and Aumentado-Armstrong*, Tristan and Valkov*, Lazar and Sharma, Gopal and Levinshtein, Alex and Grzeszczuk, Radek and Kumar, Suren},
     journal={arXiv preprint arXiv:2512.12898},
     year={2025}
