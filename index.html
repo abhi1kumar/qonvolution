@@ -3,20 +3,251 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QNN Comparison</title>
+    <title>Beyond Primitive Bloat: High-Fidelity Gaussian Splatting with Coordinate-Convolution Neural Network</title>
     <link rel="icon" href="./static/images/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700&display=swap">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+    <script>
+        window.MathJax = {
+            loader: { load: ['[tex]/boldsymbol'] },
+            tex: {
+                packages: { '[+]': ['boldsymbol'] },
+                macros: { bm: ['\\boldsymbol{#1}', 1] }
+            }
+        };
+    </script>
+    <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
     <style>
         :root {
-            --brand-color: rgb(191, 56, 117);
-            --brand-color-light: rgba(191, 56, 117, 0.6);
-            --brand-color-hover: rgb(160, 46, 98);
+            --brand-color: rgb(68, 114, 196);
+            --brand-color-light: rgba(68, 114, 196, 0.6);
+            --brand-color-hover: rgb(51, 88, 157);
         }
 
         html {
             scroll-behavior: smooth;
+            scroll-padding-top: 2rem;
+        }
+
+        body {
+            margin: 0;
+            background: #fff;
+            color: #363636;
+            font-family: 'Jost', sans-serif;
+            font-size: 1.125rem;
+            line-height: 1.5;
+        }
+
+        .page-shell {
+            width: min(100% - 3rem, 1120px);
+            margin: 0 auto;
+        }
+
+        .page-nav {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 0.5rem 1.75rem;
+            padding: 1.25rem 0;
+            font-size: 1rem;
+        }
+        .page-nav a { color: #555; }
+        .page-nav a:hover { color: var(--brand-color); }
+
+        .side-nav {
+            position: fixed;
+            top: 50%;
+            right: 1rem;
+            z-index: 50;
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+            width: 8rem;
+            transform: translateY(-50%);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s, visibility 0.2s;
+        }
+        .side-nav.is-visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        .side-nav a {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+            min-height: 1.75rem;
+            color: #555;
+            font-size: 0.8rem;
+            text-decoration: none;
+        }
+        .side-nav .side-nav-subsection {
+            padding-left: 0.65rem;
+            font-size: 0.75rem;
+        }
+        .side-nav-dot {
+            flex: 0 0 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #bbb;
+            transition: background-color 0.2s, transform 0.2s;
+        }
+        .side-nav-label {
+            padding: 0.15rem 0.35rem;
+            border-radius: 4px;
+            background: #fff;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .side-nav:hover .side-nav-label,
+        .side-nav:focus-within .side-nav-label,
+        .side-nav a[aria-current="location"] .side-nav-label {
+            opacity: 1;
+        }
+        .side-nav a[aria-current="location"] {
+            color: var(--brand-color);
+            font-weight: 500;
+        }
+        .side-nav a:hover .side-nav-dot,
+        .side-nav a:focus-visible .side-nav-dot,
+        .side-nav a[aria-current="location"] .side-nav-dot {
+            background: var(--brand-color);
+            transform: scale(1.4);
+        }
+        .side-nav a[aria-current="location"] .side-nav-dot {
+            box-shadow: 0 0 0 4px rgba(68, 114, 196, 0.15);
+        }
+        @media (max-width: 1439px) {
+            .side-nav { display: none; }
+        }
+
+        .publication-header {
+            max-width: 960px;
+            margin: 0 auto 3rem;
+            padding-top: 2.5rem;
+            text-align: center;
+        }
+        .publication-title {
+            margin: 0 0 1.75rem;
+            font-size: clamp(2rem, 4.2vw, 3rem);
+            font-weight: 500;
+            line-height: 1.15;
+            letter-spacing: -0.025em;
+            text-wrap: balance;
+        }
+        @media (min-width: 1024px) {
+            .publication-header {
+                width: min(100vw - 3rem, 1480px);
+                max-width: none;
+                margin-left: 50%;
+                transform: translateX(-50%);
+            }
+        }
+        @media (min-width: 1440px) {
+            .publication-title-opening { white-space: nowrap; }
+        }
+        .publication-authors {
+            margin-bottom: 0.75rem;
+            font-size: 1.25rem;
+            line-height: 1.6;
+        }
+        .author-block { display: inline-block; }
+        .publication-affiliations {
+            color: #555;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+        .publication-affiliations .author-block:last-child {
+            margin-top: 0.4rem;
+            font-style: italic;
+        }
+        .publication-links { margin: 1.5rem 0 2rem; }
+        .global-controls {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.65rem;
+            font-size: 1rem;
+            font-weight: 700;
+        }
+        .global-controls > span { margin-right: 0.25rem; }
+        .control-button {
+            padding: 0.45rem 1rem;
+            border: 1px solid #dbdbdb;
+            border-radius: 9999px;
+            background: #fff;
+            font: inherit;
+            cursor: pointer;
+        }
+        .control-button:hover { border-color: #999; }
+        .control-button-primary {
+            background: var(--brand-color);
+            border-color: var(--brand-color);
+            color: #fff;
+        }
+        .control-button-primary:hover { background: var(--brand-color-hover); }
+        a:focus-visible, button:focus-visible {
+            outline: 2px solid var(--brand-color);
+            outline-offset: 4px;
+        }
+
+        .content-section {
+            max-width: 960px;
+            margin: 0 auto 3.5rem;
+        }
+        .content-panel { text-align: justify; }
+        .ccnn-summary {
+            display: flex;
+            flex-wrap: nowrap;
+            justify-content: safe center;
+            align-items: baseline;
+            overflow-x: auto;
+            scrollbar-width: none;
+            gap: 0.35rem 0.5rem;
+            margin-bottom: 2rem;
+            font-size: clamp(1.5rem, 2.5vw, 2rem);
+            line-height: 1.35;
+            font-weight: 500;
+            text-align: center;
+        }
+        .ccnn-summary::-webkit-scrollbar { display: none; }
+        .ccnn-summary > * {
+            flex-shrink: 0;
+            white-space: nowrap;
+        }
+        .component-coordinates { color: rgb(240, 97, 92); }
+        .component-neighborhood { color: #c8dcff; }
+        .ablation-comparison { overflow-x: auto; }
+        .ablation-comparison-content { min-width: 800px; }
+        .media-panel { margin-bottom: 3.5rem; }
+        .media-panel img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+        .media-panel p, .media-panel figcaption { margin-top: 1.25rem; }
+        .media-panel p, .media-panel figcaption, #quantitative-caption {
+            font-size: 1.125rem;
+            line-height: 1.5;
+        }
+        .comparison-grid { margin-bottom: 4rem; }
+        .wide-media-section {
+            width: min(calc(100vw - 3rem), 1480px);
+            margin-left: 50%;
+            transform: translateX(-50%);
+        }
+        @media (min-width: 1440px) {
+            .wide-media-section { width: min(calc(100vw - 18rem), 1480px); }
+        }
+        .scene-caption {
+            margin-top: 1rem;
+            text-align: center;
+            font-size: 1.125rem;
         }
 
         .js-comparison-container {
@@ -25,6 +256,44 @@
             max-width: 100%;
             height: auto;
             cursor: ew-resize;
+            overflow: hidden;
+            background: #000;
+            border-radius: 8px;
+            box-shadow: 0 0 18px rgba(0, 0, 0, 0.18);
+        }
+        .js-comparison-container.is-fullscreen {
+            width: 100vw;
+            height: 100vh;
+            max-width: none;
+            aspect-ratio: auto;
+            border-radius: 0;
+            box-shadow: none;
+        }
+        .js-fullscreen-button {
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            line-height: 1.25rem;
+            background: rgba(0, 0, 0, 0.65);
+            color: #fff;
+            cursor: pointer;
+        }
+        .js-fullscreen-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .js-fullscreen-status {
+            position: absolute;
+            bottom: 3.5rem;
+            left: 1rem;
+            right: 1rem;
+            z-index: 40;
+            padding: 0.5rem;
+            border-radius: 6px;
+            background: #991b1b;
+            color: #fff;
+            font-size: 0.9rem;
+            text-align: center;
         }
         .js-comparison-video-top {
             position: absolute;
@@ -36,11 +305,16 @@
         }
         .comparison-video {
             display: block;
-            object-fit: cover;
-            object-position: top left;
+            max-width: none;
+            object-fit: contain;
+            object-position: center;
             position: absolute;
             top: 0;
             left: 0;
+        }
+        .js-video-baseline {
+            width: 100%;
+            height: 100%;
         }
 
         .js-slider-handle {
@@ -53,7 +327,7 @@
             transform: translateX(-50%);
             cursor: ew-resize;
             border-radius: 9999px;
-            box-shadow: 0 0 10px rgba(191, 56, 117, 0.6);
+            box-shadow: 0 0 10px var(--brand-color-light);
         }
         .js-slider-handle::after {
             content: '';
@@ -71,12 +345,12 @@
 
         .js-controls-container {
             position: absolute;
-            bottom: 0.6rem;
+            bottom: 0.125rem;
             left: 50%;
             transform: translateX(-50%);
             z-index: 30;
             background: rgba(0, 0, 0, 0.5);
-            padding: 4px 12px;
+            padding: 3px 4px;
             border-radius: 9999px;
             backdrop-filter: blur(4px);
         }
@@ -88,7 +362,7 @@
             border-radius: 6px;
             font-size: 0.85rem;
             font-weight: 700;
-            font-family: monospace;
+            font-family: inherit;
             z-index: 40;
             letter-spacing: 0.05em;
         }
@@ -104,15 +378,14 @@
             color: white;
             padding: 0.5rem 1.25rem;
             border-radius: 9999px;
-            font-weight: 600;
-            transition: all 0.2s;
+            font-weight: 400;
+            transition: background-color 0.2s;
             text-decoration: none;
             margin: 0.2rem;
-            font-size: 0.9rem;
+            font-size: 1rem;
         }
         .external-link.button:hover {
-            background-color: var(--brand-color);
-            transform: translateY(-1px);
+            background-color: #242424;
         }
         .external-link .icon { margin-right: 0.5rem; }
         .author-block a { color: var(--brand-color); text-decoration: none; }
@@ -120,30 +393,74 @@
 
         .section-header-container {
             text-align: center;
-            margin-bottom: 2rem;
-            margin-top: 4rem;
+            margin-bottom: 1.5rem;
+            margin-top: 3rem;
         }
         .section-header-title {
-            font-size: 2.25rem;
-            font-weight: 900;
-            color: #1f2937;
-            letter-spacing: -0.025em;
+            display: inline-block;
+            font-size: 2rem;
+            font-weight: 600;
+            line-height: 1.2;
+            color: var(--brand-color);
+        }
+        .subsection-title {
+            font-size: 1.5rem;
+            font-weight: 500;
+            line-height: 1.3;
+        }
+        .results-table-wrapper {
+            max-width: 100%;
+            overflow-x: auto;
+            margin: 1.25rem 0;
+        }
+        .results-table {
+            width: 100%;
+            min-width: 1280px;
+            border-collapse: collapse;
+            table-layout: fixed;
+            font-size: 0.875rem;
+            font-variant-numeric: tabular-nums;
+        }
+        .results-table th, .results-table td {
+            border: 1px solid #ddd;
+            padding: 6px 8px;
+            text-align: center;
+        }
+        .results-table thead th {
+            background: #e8e8e8;
+            font-weight: 600;
+        }
+        .results-table .method-name {
+            text-align: left;
+            font-weight: 400;
+        }
+        .results-table .method-column { width: 180px; }
+        .result-best { background: #8cb4ff; font-weight: 600; }
+        .result-second { background: #c8dcff; }
+        .result-third { background: #e5eeff; }
+        .results-legend {
+            margin: 0;
+            font: inherit;
+        }
+        @supports (background-clip: text) or (-webkit-background-clip: text) {
+            .section-header-title {
+                background: linear-gradient(90deg, var(--brand-color-hover), var(--brand-color) 50%, var(--brand-color-light));
+                -webkit-background-clip: text;
+                background-clip: text;
+                color: transparent;
+            }
         }
         .section-header-underline {
-            height: 0.3rem;
-            width: 12rem;
-            background-color: var(--brand-color);
-            margin: 0.75rem auto 0;
+            display: none;
         }
 
         .bibtex-container {
             position: relative;
             background-color: #f4f4f4;
-            border-radius: 1rem;
-            border-left: 5px solid var(--brand-color);
+            border-radius: 6px;
         }
         pre {
-            padding: 1.5rem;
+            padding: 3rem 1.5rem 1.5rem;
             overflow-x: auto;
             margin: 0;
         }
@@ -158,145 +475,456 @@
             top: 0.75rem;
             right: 0.75rem;
             padding: 0.4rem 0.8rem;
-            background-color: #363636;
-            color: white;
-            border-radius: 0.5rem;
-            font-size: 0.75rem;
-            font-weight: bold;
-            text-transform: uppercase;
+            background-color: #fff;
+            color: #444;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 400;
             transition: all 0.2s;
             z-index: 10;
         }
-        .copy-btn:hover { background-color: var(--brand-color); }
+        .copy-btn:hover { background-color: #eee; }
+        .page-footer {
+            margin-top: 2rem;
+            padding: 2rem 0 3rem;
+            border-top: 1px solid #eee;
+            color: #777;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+        @media (max-width: 640px) {
+            .page-shell { width: calc(100% - 2rem); }
+            .wide-media-section { width: calc(100vw - 2rem); }
+            .publication-header { padding-top: 1.5rem; }
+            .publication-title br { display: none; }
+            .publication-authors { font-size: 1.1rem; }
+            .section-header-title { font-size: 1.75rem; }
+            .content-panel { text-align: left; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            html { scroll-behavior: auto; }
+            *, *::before, *::after { transition: none !important; }
+        }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-900 p-4 sm:p-8 min-h-screen font-sans">
+<body>
     <div id="top"></div>
 
-    <div class="max-w-[1650px] w-full mx-auto">
-        <header class="text-center mb-12">
-            <h1 class="text-3xl sm:text-5xl font-black mb-6 text-gray-900 leading-tight">
-                Towards High-Fidelity Gaussian Splatting with <br><span class="text-brand">Q</span>ueried-C<span class="text-brand">onvolution</span> Neural Networks
+    <nav class="side-nav" aria-label="Section navigation">
+        <a href="#comparisons"><span class="side-nav-dot" aria-hidden="true"></span><span class="side-nav-label">Comparisons</span></a>
+        <a href="#abstract"><span class="side-nav-dot" aria-hidden="true"></span><span class="side-nav-label">Abstract</span></a>
+        <a href="#primitive-bloat"><span class="side-nav-dot" aria-hidden="true"></span><span class="side-nav-label">Primitive Bloat</span></a>
+        <a href="#method"><span class="side-nav-dot" aria-hidden="true"></span><span class="side-nav-label">Method</span></a>
+        <a href="#what-is-ccnn" class="side-nav-subsection"><span class="side-nav-dot" aria-hidden="true"></span><span class="side-nav-label">What is CC</span></a>
+        <a href="#combining-gs-ccnn" class="side-nav-subsection"><span class="side-nav-dot" aria-hidden="true"></span><span class="side-nav-label">GS + CCNN</span></a>
+        <a href="#component-ablation" class="side-nav-subsection"><span class="side-nav-dot" aria-hidden="true"></span><span class="side-nav-label">Ablation</span></a>
+        <a href="#results"><span class="side-nav-dot" aria-hidden="true"></span><span class="side-nav-label">Results</span></a>
+        <a href="#quantitative-results" class="side-nav-subsection"><span class="side-nav-dot" aria-hidden="true"></span><span class="side-nav-label">Quantitative</span></a>
+        <a href="#qualitative-results" class="side-nav-subsection"><span class="side-nav-dot" aria-hidden="true"></span><span class="side-nav-label">Qualitative</span></a>
+        <a href="#other-applications"><span class="side-nav-dot" aria-hidden="true"></span><span class="side-nav-label">Other Applications</span></a>
+        <a href="#regression" class="side-nav-subsection"><span class="side-nav-dot" aria-hidden="true"></span><span class="side-nav-label">1D Regression</span></a>
+        <a href="#super-resolution" class="side-nav-subsection"><span class="side-nav-dot" aria-hidden="true"></span><span class="side-nav-label">Super Resolution</span></a>
+        <a href="#related-works"><span class="side-nav-dot" aria-hidden="true"></span><span class="side-nav-label">Related Works</span></a>
+        <a href="#bibtex"><span class="side-nav-dot" aria-hidden="true"></span><span class="side-nav-label">BibTeX</span></a>
+    </nav>
+
+    <div class="page-shell">
+        <nav class="page-nav" aria-label="Page sections">
+            <a href="#comparisons">Comparisons</a>
+            <a href="#abstract">Abstract</a>
+            <a href="#primitive-bloat">Primitive Bloat</a>
+            <a href="#method">Method</a>
+            <a href="#results">Results</a>
+            <a href="#other-applications">Other Applications</a>
+            <a href="#bibtex">BibTeX</a>
+        </nav>
+        <header class="publication-header">
+            <h1 class="publication-title">
+                <span class="publication-title-opening">Beyond Primitive Bloat: High-Fidelity Gaussian Splatting with</span> <br><span class="text-brand">C</span>oordinate-<span class="text-brand">C</span>onvolution <span class="text-brand">N</span>eural <span class="text-brand">N</span>etwork
             </h1>
 
             <div class="mb-6">
-                <div class="text-lg sm:text-xl font-medium mb-2">
+                <div class="publication-authors">
                     <span class="author-block"><a href="https://sites.google.com/view/abhinavkumar" target="_blank" rel="noopener noreferrer">Abhinav Kumar</a><sup>1</sup>,</span>
                     <span class="author-block"><a href="https://www.cs.toronto.edu/~taumen/" target="_blank" rel="noopener noreferrer">Tristan Aumentado-Armstrong</a><sup>2*</sup>,</span>
                     <span class="author-block"><a href="https://lazarvalkov.github.io/" target="_blank" rel="noopener noreferrer">Lazar Valkov</a><sup>1*</sup>,</span>
                     <span class="author-block"><a href="https://hippogriff.github.io/" target="_blank" rel="noopener noreferrer">Gopal Sharma</a><sup>1</sup></span><br>
                     <span class="author-block"><a href="https://scholar.google.com/citations?user=7EFMKWUAAAAJ" target="_blank" rel="noopener noreferrer">Alex Levinshtein</a><sup>2</sup>,</span>
                     <span class="author-block"><a href="https://scholar.google.com/citations?user=Q5mjo5IAAAAJ" target="_blank" rel="noopener noreferrer">Radek Grzeszczuk</a><sup>1,2</sup>,</span>
-                    <span class="author-block"><a href="https://scholar.google.com/citations?user=cjIjwGEAAAAJ" target="_blank" rel="noopener noreferrer">Suren Kumar</a><sup>2</sup></span>
+                    <span class="author-block"><a href="https://scholar.google.com/citations?user=cjIjwGEAAAAJ" target="_blank" rel="noopener noreferrer">Suren Kumar</a><sup>1</sup></span>
                 </div>
-                <div class="text-gray-600 text-sm sm:text-base">
+                <div class="publication-affiliations">
                     <span class="author-block"><sup>1</sup>Samsung Research America, AI Center – Mountain View, CA, USA</span><br>
                     <span class="author-block"><sup>2</sup>Samsung Research, AI Center – Toronto, ON, Canada</span><br>
                     <span class="author-block"><sup>*</sup>Denotes equal contributions</span>
                 </div>
             </div>
 
-            <div class="flex flex-wrap justify-center gap-2 mb-10">
+            <div class="publication-links flex flex-wrap justify-center gap-2">
                 <a href="https://arxiv.org/pdf/2512.12898" target="_blank" rel="noopener noreferrer" class="external-link button">
                     <span class="icon"><i class="fas fa-file-pdf"></i></span><span>PDF</span>
                 </a>
                 <a href="https://arxiv.org/abs/2512.12898" target="_blank" rel="noopener noreferrer" class="external-link button">
                     <span class="icon"><i class="ai ai-arxiv"></i></span><span>arXiv</span>
                 </a>
-                <a href="https://www.youtube.com/watch?v=MrKrnHhk8IA" target="_blank" rel="noopener noreferrer" class="external-link button">
+                <a href="" target="_blank" rel="noopener noreferrer" class="external-link button">
                     <span class="icon"><i class="fab fa-youtube"></i></span><span>Video</span>
                 </a>
-                <a href="https://github.com/SamsungLabs/Qonvolution" target="_blank" rel="noopener noreferrer" class="external-link button">
-                    <span class="icon"><i class="fab fa-github"></i></span><span>Code (Under Approval)</span>
+                <a href="https://github.com/SamsungLabs/CCCN_gsplat" target="_blank" rel="noopener noreferrer" class="external-link button">
+                    <span class="icon"><i class="fab fa-github"></i></span><span>Code</span>
                 </a>
-            </div>
-
-            <div class="inline-flex items-center space-x-4 bg-white shadow-lg border border-gray-200 rounded-2xl p-4 mb-6">
-                <span class="text-gray-700 px-2 text-lg font-semibold">Global Sync:</span>
-                <button id="global-play-pause" class="px-6 py-2 bg-brand hover:opacity-90 text-white font-bold rounded-xl transition uppercase tracking-widest text-sm">Play All</button>
-                <button id="global-reset" class="px-6 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold rounded-xl transition uppercase tracking-widest text-sm">Reset All</button>
             </div>
         </header>
 
-        <div class="section-header-container mt-0">
-            <h2 class="section-header-title">MCMC vs. MCMC + QNN</h2>
-            <div class="section-header-underline"></div>
+        <div class="content-section">
+            <figure class="media-panel wide-media-section">
+                <div class="grid grid-cols-4 gap-2 mb-0.5 text-center font-medium">
+                    <h4>Spherical Voronoi</h4>
+                    <h4>NHT</h4>
+                    <h4>NHT + CCCN</h4>
+                    <h4>Ground Truth</h4>
+                </div>
+                <img src="./static/images/qualitative/teaser.png" alt="Windmill scene comparison between Spherical Voronoi, NHT, NHT with CCNN, and ground truth, with enlarged detail insets."/>
+                <figcaption class="content-panel">
+                    <b>Teaser Figure.</b> Adding CCNN to the NHT baseline improves visual fidelity compared with previous works. Inset figures highlight differences.
+                </figcaption>
+            </figure>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 mb-24" id="mcmc-grid"></div>
 
-        <div class="section-header-container mt-0">
+        <section aria-labelledby="comparisons">
+            <div class="section-header-container">
+                <h2 class="section-header-title" id="comparisons">Video Comparisons</h2>
+                <div class="section-header-underline"></div>
+            </div>
+            <div class="text-center mb-12">
+                <div class="global-controls">
+                    <span>Global Sync:</span>
+                    <button id="global-play-pause" class="control-button control-button-primary">Play All</button>
+                    <button id="global-reset" class="control-button">Reset All</button>
+                </div>
+            </div>
+            <div class="content-section">
+                <div class="comparison-grid wide-media-section grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="mcmc-grid"></div>
+            </div>
+        </section>
+
+        <div class="section-header-container" id="abstract">
             <h2 class="section-header-title">Abstract</h2>
             <div class="section-header-underline"></div>
         </div>
-        <div class="max-w-6xl mx-auto text-center mb-24">
-            <div class="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 text-gray-700 leading-relaxed text-justify text-lg">
-                Gaussian Splatting has revolutionized the field of Novel View Synthesis (NVS) with faster training and real-time rendering. However, its reconstruction fidelity still trails behind the powerful radiance models such as Zip-NeRF. Motivated by our theoretical result that both queries (such as coordinates) and neighborhood are important to learn high-fidelity signals, this paper proposes Queried-Convolutions (Qonvolutions), a simple yet powerful modification using the neighborhood properties of convolution. Qonvolutions convolve a low-fidelity signal with queries to output residual and achieve high-fidelity reconstruction. We empirically demonstrate that combining Gaussian splatting with Qonvolution neural networks (QNNs) results in state-of-the-art NVS on real-world scenes, even outperforming Zip-NeRF on image fidelity. QNNs also enhance performance of 1D regression, 2D regression and 2D super-resolution tasks.
+        <div class="content-section">
+            <div class="content-panel">
+                Gaussian Splatting (GS) has revolutionized Novel View Synthesis (NVS) with fast training and real-time rendering, yet pushing its fidelity to arbitrary high levels remains an open challenge.
+                We theoretically explain this barrier by proving that discrete Gaussian representations require an exponentially increasing number of primitives to raise training PSNR, which inevitably triggers optimization issues and validation overfitting.
+                To bypass this scaling limit without primitive bloat, we formulate detail recovery as a continuous neural field over coarse renderings and prove that monotonically reducing approximation risk to zero requires jointly leveraging low-fidelity signals, local neighborhood, and coordinate queries.
+                Guided by this result, we augment splatted renderings with an existing Coordinate-Convolution Neural Network (CCNN) that jointly convolves rendered low-fidelity signals with 2D pixel coordinate queries to synthesize residuals.
+                Integrating CCNN into five diverse Gaussian Splatting baselines establishes new state-of-the-art fidelity across NVS benchmarks while preserving real-time rendering speeds with minimal training and storage overhead.
+                Beyond NVS, they also consistently boost performance of 1D/2D regression and 2D super-resolution tasks.
             </div>
         </div>
 
-        <div class="max-w-6xl mx-auto text-center mb-24">
+        <section class="content-section" aria-labelledby="primitive-bloat">
             <div class="section-header-container">
-                <h2 class="section-header-title">Combine GS with QNN</h2>
+                <h2 class="section-header-title" id="primitive-bloat">Primitive Bloat</h2>
                 <div class="section-header-underline"></div>
             </div>
-            <div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 mb-12">
+            <figure class="media-panel">
+                <img src="./static/images/mcmc_scale_gaussians_trainval.png" alt="Training and validation PSNR versus Gaussian primitive count for MCMC and MCMC + CCNN, showing the primitive scaling bottleneck."/>
+                <figcaption class="content-panel">
+                    <b>Scaling Bottleneck.</b> Increasing training PSNR requires exponential primitive scaling (Cor. 1.1), which the MCMC baseline closely follows (\(R^2=0.998\)) on the Mip-NeRF 360 dataset.
+                    However, scaling beyond \(4\)M primitives triggers optimization issues degrading validation PSNR.
+                    Continuous CCNN bypasses this bottleneck, achieving state-of-the-art fidelity.
+                </figcaption>
+            </figure>
+        </section>
+
+        <section class="content-section" aria-labelledby="method">
+            <div class="section-header-container">
+                <h2 class="section-header-title" id="method">Method</h2>
+                <div class="section-header-underline"></div>
+            </div>
+            <div class="section-header-container">
+                <h3 class="subsection-title" id="what-is-ccnn">What is CC or Coordinate-Convolution</h3>
+            </div>
+            <p class="ccnn-summary wide-media-section">
+                <strong class="text-brand">CC</strong>
+                <span>=</span>
+                <span class="component-coordinates">Coordinate Queries</span>
+                <span>+</span>
+                <span>LF Signal</span>
+                <span>+</span>
+                <span class="component-neighborhood">Convolution (Neighborhood)</span>
+            </p>
+            <div class="section-header-container">
+                <h3 class="subsection-title" id="combining-gs-ccnn">Combining GS + CCNN</h3>
+            </div>
+            <div class="media-panel">
                 <div class="flex justify-center mb-6">
-                    <img src="static/images/gs_qnn.png" class="w-full rounded-xl" alt="Qonvolution Method Architecture"/>
+                    <img src="static/images/gs_qnn.png" alt="Qonvolution Method Architecture"/>
                 </div>
-                <p class="text-gray-700 leading-relaxed text-lg px-2 text-justify">
-                    <b>GS+QNN Architecture.</b> Our method introduces Queried-Convolution (Qonvolution) layers that effectively combine coordinate-based queries with neighborhood information. In the context of Gaussian Splatting, Qonvolutions leverage queries and low-fidelity signals to generate high-fidelity residuals, significantly improving reconstruction quality while maintaining efficient training and rendering speeds.
+                <p class="content-panel">
+                    <b>GS+CCNN Architecture.</b> CCNN convolves the coordinate queries \(\bm{q}_i\) and the LF splatted image \(\widehat{\bm{f}}^{low} (\bm{q}_i)\) to output the residual image, which is then added to the LF splatted image to get the final predicted novel view image \(\widehat{\bm{f}}_\theta (\bm{q}_i)\) in training and inference.
                 </p>
             </div>
-        </div>
 
-        <div class="section-header-container">
-            <h2 class="section-header-title">3DGS vs. 3DGS + QNN</h2>
-            <div class="section-header-underline"></div>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 mb-24" id="3dgs-grid"></div>
-
-        <div class="max-w-6xl mx-auto">
-
-            <div class="section-header-container">
-                <h2 class="section-header-title">3DGS vs. 3DGS+QNN Image Results</h2>
-                <div class="section-header-underline"></div>
-            </div>
-            <div class="bg-white p-6 rounded-3xl shadow-lg border border-gray-100 mb-20">
-                <div class="flex justify-center mb-6">
-                    <img src="./static/images/qualitative/nvs.png" class="w-full rounded-xl" alt="3D NVS Results."/>
+            <section class="wide-media-section" aria-labelledby="component-ablation">
+                <div class="section-header-container">
+                    <h3 class="subsection-title" id="component-ablation">Why All Three Matter</h3>
                 </div>
-                <p class="text-gray-700 leading-relaxed text-lg px-2 text-justify">
-                    <b>NVS Results.</b> We provide examples of NVS task using 3DGS (Kerbl et al., 2023) baseline on multiple datasets. Adding QNN to faithfully reconstructs details in various regions and results in higher quality synthesis visually. We highlight the differences in inset figures.
-                </p>
-            </div>
+                <figure class="media-panel">
+                    <div class="ablation-comparison" role="region" aria-label="CCNN component ablation comparisons" tabindex="0">
+                        <div class="ablation-comparison-content">
+                            <div class="grid grid-cols-5 gap-2 mb-0.5 text-center font-medium">
+                                <h4>No <span class="component-coordinates">Coordinate Queries</span></h4>
+                                <h4>No LF Signal</h4>
+                                <h4>No <span class="component-neighborhood">Neighborhood</span></h4>
+                                <h4>Full CCNN</h4>
+                                <h4>Ground Truth</h4>
+                            </div>
+                            <img src="./static/images/qualitative/nvs_ablation_qualitative.png" alt="Component ablation comparing no coordinate queries, no LF signal, no neighborhood, full CCNN, and ground truth, with enlarged detail insets."/>
+                        </div>
+                    </div>
+                    <figcaption class="content-panel">
+                        <b>Component Ablation.</b> Qualitative comparison of removing coordinate queries, the LF signal, or the neighborhood against full CCNN and ground truth. Inset figures highlight reconstruction differences.
+                    </figcaption>
+                </figure>
+            </section>
+        </section>
 
+        <section class="content-section" aria-labelledby="results">
             <div class="section-header-container">
-                <h2 class="section-header-title">1D Regression Results</h2>
+                <h2 class="section-header-title" id="results">Results</h2>
                 <div class="section-header-underline"></div>
             </div>
-            <div class="bg-white p-6 rounded-3xl shadow-lg border border-gray-100 mb-20">
-                <img src="./static/images/1d_regression.png" class="w-full rounded-xl mb-6" alt="1D Regression Results."/>
-                <p class="text-gray-700 leading-relaxed text-lg px-2">
-                    <b>1D Regression Results.</b> QNN outperforms MLP-based architectures including Fourier encodings in regressing high-fidelity signals. This simple experiment compares networks which take the 1D queries and low-fidelity (LF) signal as input to predict the high-fidelity 1D signal.
-                </p>
-            </div>
 
-            <div class="section-header-container">
-                <h2 class="section-header-title">2D Image Super Resolution (SR) Results</h2>
-                <div class="section-header-underline"></div>
-            </div>
-            <div class="bg-white p-6 rounded-3xl shadow-lg border border-gray-100 mb-20">
-                <img src="./static/images/qualitative/sr.png" class="w-full rounded-xl mb-6" alt="2D SR Results."/>
-                <p class="text-gray-700 leading-relaxed text-lg px-2">
-                    <b>SR Results.</b> Adding QNN to Real-ESRGAN faithfully reconstructs details in various regions and results in higher quality synthesis visually.
+            <section class="wide-media-section" aria-labelledby="quantitative-results">
+                <div class="section-header-container">
+                    <h3 class="subsection-title" id="quantitative-results">Quantitative Results</h3>
+                </div>
+                <p class="content-panel" id="quantitative-caption">
+                    <b>NVS Quantitative Results. Adding CCNN outperforms all five baselines on all six datasets.</b>
+                    Numbers are from respective papers.
                 </p>
-            </div>
+                <div class="results-legend" id="results-legend">
+                    <span class="rank-key result-best">Best</span>
+                    <span class="rank-key result-second">Second-best</span>
+                    <span class="rank-key result-third">Third-best</span>
+                    <span>&dagger; Retrained</span>
+                    <span>&Dagger; Reported in 3DGS</span>
+                </div>
+                <div class="results-table-wrapper" role="region" aria-label="NVS quantitative results" tabindex="0">
+                    <table class="results-table" aria-describedby="quantitative-caption results-legend">
+                        <colgroup>
+                            <col class="method-column">
+                            <col span="18">
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th rowspan="2" scope="col">Method</th>
+                                <th colspan="3" scope="colgroup">Mip-NeRF 360</th>
+                                <th colspan="3" scope="colgroup">Tanks &amp; Temples</th>
+                                <th colspan="3" scope="colgroup">Deep Blending</th>
+                                <th colspan="3" scope="colgroup">OMMO</th>
+                                <th colspan="3" scope="colgroup">Shelly</th>
+                                <th colspan="3" scope="colgroup">NeRF Synthetic</th>
+                            </tr>
+                            <tr>
+                                <th scope="col">PSNR &uarr;</th><th scope="col">SSIM &uarr;</th><th scope="col">LPIPS &darr;</th>
+                                <th scope="col">PSNR &uarr;</th><th scope="col">SSIM &uarr;</th><th scope="col">LPIPS &darr;</th>
+                                <th scope="col">PSNR &uarr;</th><th scope="col">SSIM &uarr;</th><th scope="col">LPIPS &darr;</th>
+                                <th scope="col">PSNR &uarr;</th><th scope="col">SSIM &uarr;</th><th scope="col">LPIPS &darr;</th>
+                                <th scope="col">PSNR &uarr;</th><th scope="col">SSIM &uarr;</th><th scope="col">LPIPS &darr;</th>
+                                <th scope="col">PSNR &uarr;</th><th scope="col">SSIM &uarr;</th><th scope="col">LPIPS &darr;</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th class="method-name" scope="row">EVER</th>
+                                <td>27.51</td><td class="result-third">0.83</td><td>0.23</td>
+                                <td colspan="3">&mdash;</td><td colspan="3">&mdash;</td><td colspan="3">&mdash;</td><td colspan="3">&mdash;</td><td colspan="3">&mdash;</td>
+                            </tr>
+                            <tr>
+                                <th class="method-name" scope="row">Mip-NeRF<sup>&Dagger;</sup></th>
+                                <td>27.69</td><td>0.79</td><td>0.24</td>
+                                <td>22.22</td><td>0.76</td><td>0.26</td>
+                                <td>29.40</td><td class="result-third">0.90</td><td class="result-third">0.25</td>
+                                <td colspan="3">&mdash;</td><td colspan="3">&mdash;</td><td colspan="3">&mdash;</td>
+                            </tr>
+                            <tr>
+                                <th class="method-name" scope="row">Adaptive</th>
+                                <td colspan="3">&mdash;</td><td colspan="3">&mdash;</td><td colspan="3">&mdash;</td><td colspan="3">&mdash;</td>
+                                <td>36.02</td><td class="result-second">0.95</td><td class="result-third">0.08</td>
+                                <td>32.51</td><td>0.96</td><td>0.05</td>
+                            </tr>
+                            <tr>
+                                <th class="method-name" scope="row">QFields</th>
+                                <td colspan="3">&mdash;</td><td colspan="3">&mdash;</td><td colspan="3">&mdash;</td><td colspan="3">&mdash;</td>
+                                <td class="result-third">37.29</td><td class="result-second">0.95</td><td class="result-second">0.07</td>
+                                <td>31.00</td><td>0.95</td><td>0.07</td>
+                            </tr>
+                            <tr>
+                                <th class="method-name" scope="row">Zip-NeRF</th>
+                                <td>28.54</td><td class="result-third">0.83</td><td class="result-third">0.19</td>
+                                <td colspan="3">&mdash;</td><td colspan="3">&mdash;</td><td colspan="3">&mdash;</td><td colspan="3">&mdash;</td>
+                                <td>33.69</td><td class="result-third">0.97</td><td>&mdash;</td>
+                            </tr>
+                        </tbody>
+                        <tbody>
+                            <tr>
+                                <th class="method-name" scope="row">Tex-GS</th>
+                                <td>27.35</td><td class="result-third">0.83</td><td class="result-third">0.19</td>
+                                <td>24.26</td><td>0.85</td><td>0.17</td>
+                                <td>28.33</td><td>0.89</td><td>0.36</td>
+                                <td colspan="3">&mdash;</td><td colspan="3">&mdash;</td>
+                                <td>33.24</td><td class="result-third">0.97</td><td class="result-third">0.04</td>
+                            </tr>
+                            <tr>
+                                <th class="method-name" scope="row">3D-HGS</th>
+                                <td colspan="3">&mdash;</td>
+                                <td class="result-third">25.08</td><td>0.84</td><td class="result-third">0.14</td>
+                                <td>29.80</td><td class="result-third">0.90</td><td class="result-third">0.25</td>
+                                <td colspan="3">&mdash;</td><td colspan="3">&mdash;</td><td colspan="3">&mdash;</td>
+                            </tr>
+                            <tr>
+                                <th class="method-name" scope="row">VDGS</th>
+                                <td>27.64</td><td>0.81</td><td>0.22</td>
+                                <td>24.02</td><td>0.85</td><td>0.18</td>
+                                <td>29.54</td><td class="result-second">0.91</td><td class="result-second">0.24</td>
+                                <td colspan="3">&mdash;</td><td colspan="3">&mdash;</td>
+                                <td class="result-third">35.97</td><td class="result-best">0.99</td><td class="result-best">0.01</td>
+                            </tr>
+                            <tr>
+                                <th class="method-name" scope="row">Revise</th>
+                                <td>27.70</td><td>0.82</td><td>0.22</td>
+                                <td>24.10</td><td class="result-third">0.86</td><td>0.18</td>
+                                <td>29.64</td><td class="result-second">0.91</td><td>0.30</td>
+                                <td colspan="3">&mdash;</td><td colspan="3">&mdash;</td><td colspan="3">&mdash;</td>
+                            </tr>
+                            <tr>
+                                <th class="method-name" scope="row">HyRF</th>
+                                <td>27.78</td><td>0.82</td><td>0.21</td>
+                                <td>24.02</td><td>0.84</td><td>0.18</td>
+                                <td class="result-second">30.37</td><td class="result-second">0.91</td><td class="result-second">0.24</td>
+                                <td colspan="3">&mdash;</td><td colspan="3">&mdash;</td><td colspan="3">&mdash;</td>
+                            </tr>
+                            <tr>
+                                <th class="method-name" scope="row">Mip-Splatting</th>
+                                <td>27.79</td><td class="result-third">0.83</td><td>0.20</td>
+                                <td colspan="3">&mdash;</td><td colspan="3">&mdash;</td><td colspan="3">&mdash;</td><td colspan="3">&mdash;</td><td colspan="3">&mdash;</td>
+                            </tr>
+                            <tr>
+                                <th class="method-name" scope="row">FreGS</th>
+                                <td>27.85</td><td class="result-third">0.83</td><td>0.21</td>
+                                <td>23.96</td><td>0.85</td><td>0.18</td>
+                                <td>29.93</td><td class="result-third">0.90</td><td class="result-second">0.24</td>
+                                <td colspan="3">&mdash;</td><td colspan="3">&mdash;</td><td colspan="3">&mdash;</td>
+                            </tr>
+                            <tr>
+                                <th class="method-name" scope="row">MCMC<sup>&dagger;</sup></th>
+                                <td>28.26</td><td class="result-second">0.84</td><td class="result-second">0.17</td>
+                                <td>24.53</td><td class="result-second">0.87</td><td class="result-second">0.13</td>
+                                <td>29.32</td><td class="result-second">0.91</td><td class="result-second">0.24</td>
+                                <td>30.10</td><td class="result-second">0.92</td><td class="result-second">0.12</td>
+                                <td>35.14</td><td class="result-third">0.94</td><td>0.09</td>
+                                <td class="result-second">36.14</td><td class="result-second">0.98</td><td class="result-second">0.02</td>
+                            </tr>
+                            <tr>
+                                <th class="method-name" scope="row">MCMC + CCNN</th>
+                                <td class="result-third">28.58</td><td class="result-second">0.84</td><td class="result-best">0.16</td>
+                                <td>24.87</td><td class="result-best">0.88</td><td class="result-best">0.12</td>
+                                <td>29.76</td><td class="result-second">0.91</td><td class="result-best">0.23</td>
+                                <td class="result-third">30.34</td><td class="result-second">0.92</td><td class="result-second">0.12</td>
+                                <td>35.57</td><td class="result-second">0.95</td><td>0.09</td>
+                                <td class="result-best">36.58</td><td class="result-second">0.98</td><td class="result-second">0.02</td>
+                            </tr>
+                            <tr>
+                                <th class="method-name" scope="row">NHT<sup>&dagger;</sup></th>
+                                <td class="result-second">29.04</td><td class="result-best">0.85</td><td class="result-second">0.17</td>
+                                <td class="result-second">25.72</td><td class="result-best">0.88</td><td class="result-best">0.12</td>
+                                <td class="result-third">30.17</td><td class="result-second">0.91</td><td class="result-third">0.25</td>
+                                <td class="result-second">31.50</td><td class="result-best">0.93</td><td class="result-second">0.12</td>
+                                <td class="result-second">37.64</td><td class="result-best">0.96</td><td class="result-best">0.06</td>
+                                <td>33.19</td><td class="result-third">0.97</td><td class="result-third">0.04</td>
+                            </tr>
+                            <tr>
+                                <th class="method-name" scope="row">NHT + CCNN</th>
+                                <td class="result-best">29.19</td><td class="result-best">0.85</td><td class="result-second">0.17</td>
+                                <td class="result-best">25.79</td><td class="result-best">0.88</td><td class="result-best">0.12</td>
+                                <td class="result-best">30.64</td><td class="result-best">0.92</td><td class="result-second">0.24</td>
+                                <td class="result-best">31.74</td><td class="result-best">0.93</td><td class="result-best">0.11</td>
+                                <td class="result-best">37.67</td><td class="result-best">0.96</td><td class="result-best">0.06</td>
+                                <td>33.33</td><td class="result-third">0.97</td><td class="result-third">0.04</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
 
-            <div class="section-header-container">
+            <section class="wide-media-section" aria-labelledby="qualitative-results">
+                <div class="section-header-container">
+                    <h3 class="subsection-title" id="qualitative-results">Qualitative Results</h3>
+                </div>
+                <figure class="media-panel">
+                    <div class="grid grid-cols-4 gap-2 mb-0.5 text-center font-medium">
+                        <h4>Spherical Voronoi</h4>
+                        <h4>NHT</h4>
+                        <h4>NHT + CCCN</h4>
+                        <h4>Ground Truth</h4>
+                    </div>
+                    <img src="./static/images/qualitative/nvs.png" alt="Novel view synthesis comparisons across five scenes, with zoomed-in details showing differences in reconstruction fidelity."/>
+                    <figcaption class="content-panel">
+                        <b>NVS Qualitative Results</b> between previous works and adding CCNN with NHT baseline on five datasets. Adding CCNN results in higher fidelity synthesis visually. Inset figures highlight differences.
+                    </figcaption>
+                </figure>
+            </section>
+        </section>
+
+        <div class="content-section">
+
+            <section aria-labelledby="other-applications">
+                <div class="section-header-container">
+                    <h2 class="section-header-title" id="other-applications">Other Applications</h2>
+                    <div class="section-header-underline"></div>
+                </div>
+
+                <section aria-labelledby="regression">
+                    <div class="section-header-container">
+                        <h3 class="subsection-title" id="regression">1D Regression Results</h3>
+                        <div class="section-header-underline"></div>
+                    </div>
+                    <div class="media-panel">
+                        <img src="./static/images/1d_regression.png" alt="1D Regression Results."/>
+                        <p class="content-panel">
+                            <b>1D Regression Results.</b> CCNN outperforms MLP-based architectures including Fourier encodings in regressing high-fidelity signals. This simple experiment compares networks which take the 1D queries and low-fidelity (LF) signal as input to predict the high-fidelity 1D signal.
+                        </p>
+                    </div>
+                </section>
+
+                <section aria-labelledby="super-resolution">
+                    <div class="section-header-container">
+                        <h3 class="subsection-title" id="super-resolution">2D Image Super Resolution (SR) Results</h3>
+                        <div class="section-header-underline"></div>
+                    </div>
+                    <div class="media-panel">
+                        <div class="grid grid-cols-3 gap-2 mb-0.5 text-center font-medium">
+                            <h4>Real-ESRGAN</h4>
+                            <h4>Real-ESRGAN + CCNN</h4>
+                            <h4>Ground Truth</h4>
+                        </div>
+                        <img src="./static/images/qualitative/sr.png" alt="2D SR Results."/>
+                        <p class="content-panel">
+                            <b>SR Results of DIV2K Val images.</b> Adding CCNN to Real-ESRGAN faithfully reconstructs details in various regions and results in higher fidelity synthesis visually. We highlight the differences in inset figures
+                        </p>
+                    </div>
+                </section>
+            </section>
+
+            <div class="section-header-container" id="related-works">
                 <h2 class="section-header-title">Related Works</h2>
                 <div class="section-header-underline"></div>
             </div>
-            <div class="bg-white p-8 rounded-3xl shadow-lg border border-gray-100 mb-20 text-gray-700 leading-relaxed text-justify text-lg">
+            <div class="content-panel">
                 <p class="italic mb-6">"We stand on the shoulder of giants. (William of Conches, 1123)"</p>
                 <ul class="space-y-2 list-none text-left">
                     <li><b>1. Encodings</b>: <a href="https://bmild.github.io/fourfeat/" target="_blank" rel="noopener noreferrer" class="text-brand font-semibold hover:underline">Fourier encodings</a> and <a href="https://nvlabs.github.io/instant-ngp/" target="_blank" rel="noopener noreferrer" class="text-brand font-semibold hover:underline">Hash-grids</a> change the input coordinates to a higher dimensional coordinates for an MLP.</li>
@@ -309,14 +937,14 @@
             </div>
 
             <div class="max-w-6xl mx-auto text-left mb-8">
-                <div class="section-header-container">
+                <div class="section-header-container" id="bibtex">
                     <h2 class="section-header-title">BibTeX</h2>
                     <div class="section-header-underline"></div>
                 </div>
-                <div class="bibtex-container shadow-inner">
+                <div class="bibtex-container">
                     <button class="copy-btn" id="copy-bibtex">Copy</button>
-                    <pre><code id="bibtex-code">@article{kumar2025qonvolution,
-    title={Towards High-Fidelity Gaussian Splatting with Queried-Convolution Neural Networks},
+                    <pre><code id="bibtex-code">@article{kumar2025ccnn,
+    title={Beyond Primitive Bloat: High-Fidelity Gaussian Splatting with Coordinate-Convolution Neural Network},
     author={Kumar, Abhinav and Aumentado-Armstrong*, Tristan and Valkov*, Lazar and Sharma, Gopal and Levinshtein, Alex and Grzeszczuk, Radek and Kumar, Suren},
     journal={arXiv preprint arXiv:2512.12898},
     year={2025}
@@ -330,7 +958,7 @@
                 </a>
             </div>
 
-            <footer class="text-center pb-12 text-gray-500 text-sm border-t border-gray-200 pt-8">
+            <footer class="page-footer">
                 <span class="ml-2">This site has been <a href="https://en.wikipedia.org/wiki/Vibe_coding" target="_blank" rel="noopener noreferrer" class="hover:underline hover:text-brand transition-colors mr-2">vibe-coded</a></span> | <a href="https://github.com/abhi1kumar/qonvolution" target="_blank" rel="noopener noreferrer" class="hover:underline hover:text-brand transition-colors mr-2">Website source code</a>
             </footer>
         </div>
@@ -356,7 +984,7 @@
 
             return `
                 <div class="flex flex-col">
-                    <div class="js-comparison-container rounded-2xl shadow-xl overflow-hidden bg-black border-2 border-gray-100 transition-transform duration-300 hover:scale-[1.02]">
+                    <div class="js-comparison-container">
                         <video class="js-video-baseline comparison-video" loop muted playsinline preload="auto">
                             <source src="${baselineUrl}" type="video/mp4">
                         </video>
@@ -366,27 +994,66 @@
                             </video>
                         </div>
                         <div class="js-slider-handle" style="left: 50%;"></div>
-                        <div class="js-controls-container flex items-center space-x-3">
-                            <button class="js-play-pause-button px-4 py-1.5 bg-brand-light text-white font-bold rounded-full text-sm uppercase tracking-wider">Play</button>
-                            <button class="js-restart-button px-4 py-1.5 bg-gray-100/80 text-gray-800 font-bold rounded-full text-sm uppercase tracking-wider">Reset</button>
+                        <div class="js-controls-container flex items-center space-x-1">
+                            <button class="js-play-pause-button px-2 py-1 bg-brand-light text-white font-bold rounded-full text-sm tracking-wider">Play</button>
+                            <button class="js-restart-button px-2 py-1 bg-gray-100/80 text-gray-800 font-bold rounded-full text-sm tracking-wider">Reset</button>
+                            <button type="button" class="js-fullscreen-button" aria-label="View ${scene.name} comparison in full screen" title="Full screen" aria-pressed="false">
+                                <i class="fas fa-expand" aria-hidden="true"></i>
+                            </button>
                         </div>
+                        <p class="js-fullscreen-status" role="status" hidden></p>
                         <div class="label-badge left-3 bg-gray-900/60">${baselineLabel}</div>
-                        <div class="label-badge right-3 bg-brand-light">${proposedLabel}</div>
+                        <div class="label-badge right-3 bg-brand">${proposedLabel}</div>
                     </div>
-                    <p class="text-center mt-4 text-xl text-gray-800 font-normal">Scene ${scene.id}. ${scene.name}</p>
+                    <p class="scene-caption">Scene ${scene.id}. ${scene.name}</p>
                 </div>
             `;
         }
 
         const mcmcGrid = document.getElementById('mcmc-grid');
-        const dgsGrid = document.getElementById('3dgs-grid');
 
         scenes.forEach(scene => {
-            mcmcGrid.innerHTML += createVideoCard(scene, "mip_mcmc_", "mip_mcmc_qnn_", "MCMC", "MCMC+QNN");
-            dgsGrid.innerHTML += createVideoCard(scene, "mip_3dgs_", "mip_3dgs_qnn_", "3DGS", "3DGS+QNN");
+            mcmcGrid.innerHTML += createVideoCard(scene, "mip_mcmc_", "mip_mcmc_qnn_", "NHT", "NHT + CCNN");
         });
 
         document.addEventListener('DOMContentLoaded', () => {
+            const sideNav = document.querySelector('.side-nav');
+            const sectionLinks = [...sideNav.querySelectorAll('a')];
+            const sectionTargets = sectionLinks.map(link => document.querySelector(link.hash));
+            const header = document.querySelector('.publication-header');
+            let navigationFramePending = false;
+
+            const updateSectionNavigation = () => {
+                navigationFramePending = false;
+                sideNav.classList.toggle('is-visible', header.getBoundingClientRect().bottom <= 0);
+                let activeIndex = 0;
+                sectionTargets.forEach((section, index) => {
+                    if (section.getBoundingClientRect().top <= window.innerHeight * 0.3) {
+                        activeIndex = index;
+                    }
+                });
+                if (window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2) {
+                    activeIndex = sectionLinks.length - 1;
+                }
+                sectionLinks.forEach((link, index) => {
+                    if (index === activeIndex) {
+                        link.setAttribute('aria-current', 'location');
+                    } else {
+                        link.removeAttribute('aria-current');
+                    }
+                });
+            };
+            const scheduleSectionNavigation = () => {
+                if (!navigationFramePending) {
+                    navigationFramePending = true;
+                    window.requestAnimationFrame(updateSectionNavigation);
+                }
+            };
+            window.addEventListener('scroll', scheduleSectionNavigation, { passive: true });
+            window.addEventListener('resize', scheduleSectionNavigation);
+            window.addEventListener('load', scheduleSectionNavigation);
+            updateSectionNavigation();
+
             const containers = document.querySelectorAll('.js-comparison-container');
             const allVideos = document.querySelectorAll('video');
             const globalPlayBtn = document.getElementById('global-play-pause');
@@ -426,6 +1093,10 @@
                 const handle = container.querySelector('.js-slider-handle');
                 const playBtn = container.querySelector('.js-play-pause-button');
                 const restartBtn = container.querySelector('.js-restart-button');
+                const fullscreenBtn = container.querySelector('.js-fullscreen-button');
+                const fullscreenStatus = container.querySelector('.js-fullscreen-status');
+                const fullscreenIcon = fullscreenBtn.querySelector('i');
+                const fullscreenLabel = fullscreenBtn.getAttribute('aria-label');
 
                 let isDragging = false;
                 const videos = [baselineVideo, proposedVideo];
@@ -437,6 +1108,39 @@
                         proposedVideo.style.height = `${rect.height}px`;
                     }
                 };
+
+                const getFullscreenElement = () => document.fullscreenElement || document.webkitFullscreenElement;
+                const updateFullscreen = () => {
+                    const isFullscreen = getFullscreenElement() === container;
+                    container.classList.toggle('is-fullscreen', isFullscreen);
+                    fullscreenBtn.setAttribute('aria-pressed', String(isFullscreen));
+                    fullscreenBtn.setAttribute('aria-label', isFullscreen ? 'Exit full screen' : fullscreenLabel);
+                    fullscreenBtn.title = isFullscreen ? 'Exit full screen' : 'Full screen';
+                    fullscreenIcon.className = isFullscreen ? 'fas fa-compress' : 'fas fa-expand';
+                    window.requestAnimationFrame(setGeometry);
+                };
+                const requestFullscreen = container.requestFullscreen || container.webkitRequestFullscreen;
+                if (!requestFullscreen) {
+                    fullscreenBtn.disabled = true;
+                    fullscreenBtn.title = 'Full screen is not supported in this browser';
+                }
+                fullscreenBtn.addEventListener('click', async () => {
+                    fullscreenStatus.hidden = true;
+                    try {
+                        if (getFullscreenElement() === container) {
+                            const exitFullscreen = document.exitFullscreen || document.webkitExitFullscreen;
+                            await exitFullscreen.call(document);
+                        } else {
+                            await requestFullscreen.call(container);
+                        }
+                    } catch (error) {
+                        console.error('Could not change full-screen mode:', error);
+                        fullscreenStatus.textContent = 'Could not change full-screen mode. Please try again.';
+                        fullscreenStatus.hidden = false;
+                    }
+                });
+                document.addEventListener('fullscreenchange', updateFullscreen);
+                document.addEventListener('webkitfullscreenchange', updateFullscreen);
 
                 const syncTime = () => {
                     if (Math.abs(proposedVideo.currentTime - baselineVideo.currentTime) > 0.05) {
