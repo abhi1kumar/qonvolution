@@ -974,17 +974,19 @@
     </div>
 
     <script>
-        const ASSET_BASE_URL = "https://github.com/abhi1kumar/qonvolution/releases/download/v2.0.0";
+        const ASSET_BASE_URL = "https://github.com/abhi1kumar/qonvolution/releases/download/v2.0.1";
         const scenes = [
-            { id: 1, name: "Treehill", file: "treehill.mp4" },
-            { id: 2, name: "Flowers", file: "flowers.mp4" },
-            { id: 3, name: "Bonsai", file: "bonsai.mp4" },
-            { id: 4, name: "Room", file: "room.mp4" },
-            { id: 5, name: "Kitchen", file: "kitchen.mp4" },
-            { id: 6, name: "Counter", file: "counter.mp4" },
-            { id: 7, name: "Stump", file: "stump.mp4" },
-            { id: 8, name: "Bicycle", file: "bicycle.mp4" },
-            { id: 9, name: "Garden", file: "garden.mp4" },
+            { id: 1, name: "Mip-NeRF 360 Treehill", file: "treehill.mp4" },
+            { id: 2, name: "Mip-NeRF 360 Flowers", file: "flowers.mp4" },
+            { id: 3, name: "Mip-NeRF 360 Bicycle", file: "bicycle.mp4" },
+            { id: 4, name: "Mip-NeRF 360 Bonsai", file: "bonsai.mp4" },
+            { id: 5, name: "Mip-NeRF 360 Room", file: "room.mp4" },
+            { id: 6, name: "Mip-NeRF 360 Counter", file: "counter.mp4" },
+            { id: 7, name: "Mip-NeRF 360 Stump", file: "stump.mp4" },
+        ];
+        const ommoScenes = [
+            { id: 8, name: "OMMO 05", file: "05.mp4" },
+            { id: 9, name: "OMMO 15", file: "15.mp4" },
         ];
 
         function createVideoCard(scene, baselinePrefix, proposedPrefix, baselineLabel, proposedLabel) {
@@ -1023,6 +1025,9 @@
 
         scenes.forEach(scene => {
             mcmcGrid.innerHTML += createVideoCard(scene, "mip_nht_", "mip_nht_cccn_", "NHT", "NHT + CCNN");
+        });
+        ommoScenes.forEach(scene => {
+            mcmcGrid.innerHTML += createVideoCard(scene, "ommo_nht_", "ommo_nht_qnn_", "NHT", "NHT + CCNN");
         });
 
         document.addEventListener('DOMContentLoaded', () => {
