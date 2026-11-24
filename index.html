@@ -657,7 +657,7 @@
                 <span>=</span>
                 <span class="component-coordinates">Coordinate Queries</span>
                 <span>+</span>
-                <span>LF Signal</span>
+                <span>Coarse LF Signal</span>
                 <span>+</span>
                 <span class="component-neighborhood">Convolution (Neighborhood)</span>
             </p>
@@ -669,20 +669,20 @@
                     <img src="static/images/gs_qnn.png" alt="Qonvolution Method Architecture"/>
                 </div>
                 <p class="content-panel">
-                    <b>GS+CCNN Architecture.</b> CCNN convolves the coordinate queries \(\bm{q}_i\) and the LF splatted image \(\widehat{\bm{f}}^{low} (\bm{q}_i)\) to output the residual image, which is then added to the LF splatted image to get the final predicted novel view image \(\widehat{\bm{f}}_\theta (\bm{q}_i)\) in training and inference.
+                    <b>GS+CCNN Architecture.</b> CCNN convolves the coordinate queries \(\bm{q}_i\) and the coarse LF splatted image \(\widehat{\bm{f}}^{low} (\bm{q}_i)\) to output the residual image, which is then added to the LF splatted image to get the final predicted novel view image \(\widehat{\bm{f}}_\theta (\bm{q}_i)\) in training and inference.
                 </p>
             </div>
 
             <section class="wide-media-section" aria-labelledby="component-ablation">
                 <div class="section-header-container">
-                    <h3 class="subsection-title" id="component-ablation">Why All Three Matter</h3>
+                    <h3 class="subsection-title" id="component-ablation">Why All Three Components: Coordinate Queries, Coarse Signal, Neighborhood Matters?</h3>
                 </div>
                 <figure class="media-panel">
                     <div class="ablation-comparison" role="region" aria-label="CCNN component ablation comparisons" tabindex="0">
                         <div class="ablation-comparison-content">
                             <div class="grid grid-cols-5 gap-2 mb-0.5 text-center font-medium">
                                 <h4>No <span class="component-coordinates">Coordinate Queries</span></h4>
-                                <h4>No LF Signal</h4>
+                                <h4>No Coarse Signal</h4>
                                 <h4>No <span class="component-neighborhood">Neighborhood</span></h4>
                                 <h4>Full CCNN</h4>
                                 <h4>Ground Truth</h4>
