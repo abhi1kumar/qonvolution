@@ -1,4 +1,4 @@
-# Beyond Primitive Bloat: High-Fidelity Gaussian Splatting with Coordinate-Convolution Neural Network Website
+# Beyond Primitive Bloat: High-Fidelity Gaussian Splatting via Coordinate-Convolution Neural Network Website
 
 <div align="center">
 
